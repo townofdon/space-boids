@@ -12,8 +12,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1b3aa49afc04204ac64b0aded7b7a2, type: 3}
   m_Name: Pod
   m_EditorClassIdentifier: 
-  speed: 5
-  sightDistance: 5
-  cohesion: 0.5
-  separation: 0.5
-  alignment: 0.5
+  moveSpeed: 10
+  rotationSpeed: 360
+  sightDistance: 10
+  steeringVariance: 0.2
+  steeringVarianceTimeStep: 0.5
+  cohesion: 0.476
+  separation: 0.478
+  alignment: 0.046
+  followTheLeader: 0.035
+  avoidance: 0.5
+  closenessMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.0023498535
+      inSlope: 0.011594095
+      outSlope: 0.011594095
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.20416667
+    - serializedVersion: 3
+      time: 0.6263542
+      value: 0.5015082
+      inSlope: 2.4298725
+      outSlope: 2.4298725
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07357921
+      outWeight: 0.087032534
+    - serializedVersion: 3
+      time: 0.7842579
+      value: 0.88418704
+      inSlope: 0.9019941
+      outSlope: 0.9019941
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.48651975
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.02021568
+      outSlope: 0.02021568
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.23333335
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

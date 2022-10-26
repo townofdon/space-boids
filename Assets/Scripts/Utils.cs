@@ -9,6 +9,11 @@ public static class Utils
         if (_screenStats == null) _screenStats = new ScreenStats();
         return _screenStats;
     }
+
+    public static void InvalidateScreenStats()
+    {
+        _screenStats = null;
+    }
 }
 
 public static class CameraUtils
