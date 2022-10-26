@@ -8,7 +8,17 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
+    public enum BoidType
+    {
+        Pod,
+        Xenon,
+        Freighter,
+        Noble,
+        Pirate,
+    }
+
     [SerializeField] bool debug = false;
+    [SerializeField] BoidType type;
     [SerializeField] BoidStats stats;
     [SerializeField] float size = 0.5f;
 
@@ -22,10 +32,18 @@ public class Boid : MonoBehaviour
     }
 
     // state
+    float rotationSpeed = 360f;
+
     Boid leader;
     Boid[] neighbors = new Boid[100];
     int neighborCount = 0;
     float neighborCountQuotient = 1f;
+
+    Obstacle[] obstaclesNearby = new Obstacle[100];
+    int obstaclesNearbyCount = 0;
+
+    Predator[] predatorsNearby = new Predator[20];
+    int predatorsNearbyCount = 0;
 
     Vector2 neighborCentroidHeading;
 
@@ -33,8 +51,10 @@ public class Boid : MonoBehaviour
     Vector2 separation;
     Vector2 alignment;
     Vector2 followTheLeader;
+    Vector2 avoidance;
 
     float closeness;
+    float maxCloseness;
 
     Vector2 sightVector = Vector2.up;
     Vector2 desiredHeading = Vector2.up;
@@ -42,9 +62,9 @@ public class Boid : MonoBehaviour
     float steeringVarianceTime = Mathf.Infinity;
 
     static bool didInvalidateScreenStats;
-    static bool didInitSimulation;
 
     // public
+    public BoidType Type => type;
     public bool IsAlive => enabled && gameObject.activeSelf && isActiveAndEnabled;
     public bool IsLeader => neighborCount > 0 && leader == null;
     public Vector2 velocity => rb == null ? Vector2.zero : rb.velocity;
@@ -52,28 +72,71 @@ public class Boid : MonoBehaviour
     public Vector2 position => transform.position;
     public Boid CurrentlyFollowing => leader != null ? leader : this;
 
+    int _debug_simulation_boids;
+    int _debug_simulation_obstacles;
+
     public bool IsBehind(Boid other)
     {
         if (other == null) return false;
         return Vector2.Dot(other.position - position, velocity) > 0f;
     }
 
-    public float ForwardnessTo(Boid other)
+    public float ForwardnessTo(Boid other) { return ForwardnessTo(other.transform); }
+    public float ForwardnessTo(Obstacle other) { return ForwardnessTo(other.transform); }
+    public float ForwardnessTo(Transform other)
     {
         if (other == null) return 0f;
-        return Vector2.Dot(other.position - position, velocity);
+        return Vector2.Dot((Vector2)other.position - position, velocity);
     }
 
-    public Vector2 LineTo(Boid other)
+    public Vector2 LineTo(Boid other) { return LineTo(other.transform); }
+    public Vector2 LineTo(Obstacle other) { return LineTo(other.transform); }
+    public Vector2 LineTo(Transform other)
     {
         if (other == null) return Vector2.zero;
-        return other.position - position;
+        return (Vector2)other.position - position;
     }
 
-    public float DistanceTo(Boid other)
+    public Vector2 HeadingTo(Boid other) { return HeadingTo(other.transform); }
+    public Vector2 HeadingTo(Obstacle other) { return HeadingTo(other.transform); }
+    public Vector2 HeadingTo(Predator other) { return HeadingTo(other.transform); }
+    public Vector2 HeadingTo(Transform other)
+    {
+        return LineTo(other).normalized;
+    }
+
+    public Vector2 LineFrom(Boid other) { return LineFrom(other.transform); }
+    public Vector2 LineFrom(Obstacle other) { return LineFrom(other.transform); }
+    public Vector2 LineFrom(Predator other) { return LineFrom(other.transform); }
+    public Vector2 LineFrom(Transform other)
+    {
+        if (other == null) return Vector2.zero;
+        return position - (Vector2)other.position;
+    }
+
+    public Vector2 HeadingFrom(Boid other) { return HeadingFrom(other.transform); }
+    public Vector2 HeadingFrom(Obstacle other) { return HeadingFrom(other.transform); }
+    public Vector2 HeadingFrom(Predator other) { return HeadingFrom(other.transform); }
+    public Vector2 HeadingFrom(Transform other)
+    {
+        return LineFrom(other).normalized;
+    }
+
+    public float DistanceTo(Boid other) { return DistanceTo(other.transform); }
+    public float DistanceTo(Obstacle other) { return DistanceTo(other.transform); }
+    public float DistanceTo(Predator other) { return DistanceTo(other.transform); }
+    public float DistanceTo(Transform other)
     {
         if (other == null) return Mathf.Infinity;
         return Vector2.Distance(position, other.position);
+    }
+
+    public bool CanSee(Boid other) { return CanSee(other.transform); }
+    public bool CanSee(Obstacle other) { return CanSee(other.transform); }
+    public bool CanSee(Predator other) { return CanSee(other.transform); }
+    public bool CanSee(Transform other)
+    {
+        return Vector2.Distance(transform.position, other.position) <= stats.sightDistance;
     }
 
     void OnEnable()
@@ -89,11 +152,11 @@ public class Boid : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        if (!didInitSimulation)
-        {
-            didInitSimulation = true;
-            Simulation.Init();
-        }
+        // if (!didInitSimulation)
+        // {
+        //     didInitSimulation = true;
+        //     Simulation.Init();
+        // }
     }
 
     void Start()
@@ -110,17 +173,23 @@ public class Boid : MonoBehaviour
         Alignment();
         FollowTheLeader();
         Separation();
+        Avoidance();
+        RunFromPredators();
         desiredHeading = VaryHeading();
         desiredHeading = ReflectOffScreenEdges();
         ChangeHeading();
         Move();
+        DebugSimulation();
     }
 
     void PerceiveEnvironment()
     {
-        neighborCount = Simulation.GetNeighbors(this, neighbors, stats);
+        neighborCount = Simulation.GetNeighbors(this, neighbors);
         leader = Simulation.GetLeader(this, neighbors, neighborCount);
         neighborCountQuotient = neighborCount == 0 ? 1f : 1f / neighborCount;
+        obstaclesNearbyCount = Simulation.GetObstaclesNearby(this, obstaclesNearby);
+        predatorsNearbyCount = Simulation.GetPredatorsNearby(this, predatorsNearby);
+        rotationSpeed = stats.rotationSpeed;
     }
 
     void Cohesion()
@@ -150,7 +219,7 @@ public class Boid : MonoBehaviour
         {
             closeness = Mathf.Clamp01((stats.sightDistance - DistanceTo(neighbors[i])) / stats.sightDistance);
             closeness = Mathf.Clamp01(stats.closenessMod.Evaluate(closeness));
-            separation += (position - neighbors[i].position).normalized * closeness;
+            separation += HeadingFrom(neighbors[i]) * closeness;
         }
         desiredHeading += separation * stats.separation;
     }
@@ -181,11 +250,50 @@ public class Boid : MonoBehaviour
         desiredHeading += followTheLeader * stats.followTheLeader;
     }
 
+    void Avoidance()
+    {
+        avoidance = Vector2.zero;
+        closeness = 0f;
+        maxCloseness = 0f;
+        if (stats.avoidance <= 0) return;
+        if (obstaclesNearbyCount == 0) return;
+        for (int i = 0; i < obstaclesNearbyCount; i++)
+        {
+            if (DistanceTo(obstaclesNearby[i]) >= obstaclesNearby[i].avoidanceMaxRadius) continue;
+            // get closeness as a value from MIN to (MAX - MIN)
+            closeness = obstaclesNearby[i].avoidanceMaxRadius - (DistanceTo(obstaclesNearby[i]) - obstaclesNearby[i].avoidanceMinRadius);
+            // get closeness where 0 => MIN, 1 => MAX avoidance radius
+            closeness = Mathf.Clamp01(closeness / (obstaclesNearby[i].avoidanceMaxRadius - obstaclesNearby[i].avoidanceMinRadius));
+            closeness = Mathf.Pow(closeness, stats.avoidanceTension);
+            if (closeness > maxCloseness) maxCloseness = closeness;
+            closeness = closeness * stats.avoidanceStrength * obstaclesNearby[i].avoidanceMod;
+            avoidance += HeadingFrom(obstaclesNearby[i]) * closeness;
+        }
+        rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, maxCloseness);
+        desiredHeading += avoidance * stats.avoidance * 2f;
+    }
+
+    void RunFromPredators()
+    {
+        avoidance = Vector2.zero;
+        closeness = 0f;
+        if (stats.runFromPredators <= 0) return;
+        if (predatorsNearbyCount == 0) return;
+        for (int i = 0; i < predatorsNearbyCount; i++)
+        {
+            closeness = stats.sightDistance - DistanceTo(predatorsNearby[i]);
+            closeness = Mathf.Clamp01(closeness / stats.sightDistance);
+            closeness = closeness * stats.predatorFleeMod.Evaluate(closeness) * predatorsNearby[i].scarinessMod;
+            avoidance += HeadingFrom(predatorsNearby[i]) * closeness;
+        }
+        desiredHeading += avoidance * stats.avoidance * 4f;
+    }
+
     void ChangeHeading()
     {
         desiredHeading = desiredHeading.normalized;
         desiredRotation = Quaternion.Euler(0f, 0f, Vector2.SignedAngle(Vector2.up, desiredHeading));
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, stats.rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
     }
 
     void Move()
@@ -251,6 +359,7 @@ public class Boid : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, size);
         Gizmos.color = Color.cyan;
         if (neighborCount > 0) Gizmos.color = Color.yellow;
+        if (obstaclesNearbyCount > 0) Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, stats.sightDistance);
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, transform.position + (Vector3)(desiredHeading * stats.sightDistance));
@@ -281,16 +390,30 @@ public class Boid : MonoBehaviour
             Gizmos.DrawLine(transform.position, neighbors[i].position);
             Gizmos.DrawSphere(neighbors[i].position, 0.5f);
         }
-        DrawStat(separation, Color.red.toAlpha(0.4f));
+        DrawStat(separation, Color.magenta.toAlpha(0.4f));
         DrawStat(alignment, Color.green.toAlpha(0.4f));
-        DrawStat(cohesion, Color.cyan.toAlpha(0.2f));
-        DrawStat(neighborCentroidHeading, Color.cyan.toAlpha(0.4f));
+        DrawStat(cohesion, Color.cyan.toAlpha(0.3f));
+        DrawStat(neighborCentroidHeading, Color.cyan.toAlpha(0.3f));
+        DrawStat(avoidance, Color.red.toAlpha(0.5f));
+
+        for (int i = 0; i < obstaclesNearbyCount; i++)
+        {
+            if (obstaclesNearby[i] == null || !obstaclesNearby[i].isActiveAndEnabled) continue;
+            Gizmos.color = Color.red.toAlpha(0.4f);
+            Gizmos.DrawLine(transform.position, obstaclesNearby[i].position);
+            Gizmos.DrawSphere(obstaclesNearby[i].position, 0.5f);
+        }
     }
 
     void DrawStat(Vector3 steeringMod, Color color)
     {
         Gizmos.color = color;
         Gizmos.DrawLine(transform.position, transform.position + steeringMod);
-        Gizmos.DrawCube(transform.position + steeringMod, Vector3.one * 0.3f);
+    }
+
+    void DebugSimulation()
+    {
+        _debug_simulation_boids = Simulation._debug_boids.Count;
+        _debug_simulation_obstacles = Simulation._debug_obstacles.Count;
     }
 }

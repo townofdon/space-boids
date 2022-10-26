@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e1b3aa49afc04204ac64b0aded7b7a2, type: 3}
-  m_Name: Pod
+  m_Name: Pod Copy
   m_EditorClassIdentifier: 
   moveSpeed: 10
   rotationSpeed: 360
   sightDistance: 7
   steeringVariance: 0.2
   steeringVarianceTimeStep: 0.5
-  cohesion: 0.149
-  separation: 0.068
-  alignment: 0.207
-  followTheLeader: 0
+  cohesion: 0.299
+  separation: 0.113
+  alignment: 0.132
+  followTheLeader: 0.035
   avoidance: 1
   runFromPredators: 1
   closenessMod:

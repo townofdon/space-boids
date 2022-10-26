@@ -5,6 +5,11 @@ using UnityEngine;
 public static class Simulation
 {
     static List<Boid> boids = new List<Boid>();
+    static List<Obstacle> obstacles = new List<Obstacle>();
+    static List<Predator> predators = new List<Predator>();
+
+    public static List<Boid> _debug_boids => boids;
+    public static List<Obstacle> _debug_obstacles => obstacles;
 
     public static void RegisterBoid(Boid current)
     {
@@ -18,20 +23,52 @@ public static class Simulation
         boids.Remove(current);
     }
 
+    public static void RegisterObstacle(Obstacle current)
+    {
+        if (obstacles.Contains(current)) return;
+        obstacles.Add(current);
+    }
+
+    public static void DeregisterObstacle(Obstacle current)
+    {
+        if (!obstacles.Contains(current)) return;
+        obstacles.Remove(current);
+    }
+
+    public static void RegisterPredator(Predator current)
+    {
+        if (predators.Contains(current)) return;
+        predators.Add(current);
+    }
+
+    public static void DeregisterPredator(Predator current)
+    {
+        if (!predators.Contains(current)) return;
+        predators.Remove(current);
+    }
+
     [UnityEditor.Callbacks.DidReloadScripts]
     static void OnScriptsReloaded()
     {
         boids.Clear();
-        foreach (var boid in Object.FindObjectsOfType<Boid>())
-        {
-            boids.Add(boid);
-        }
+        obstacles.Clear();
+        predators.Clear();
+        // foreach (var boid in Object.FindObjectsOfType<Boid>())
+        // {
+        //     boids.Add(boid);
+        // }
+        // foreach (var obstacle in Object.FindObjectsOfType<Obstacle>())
+        // {
+        //     obstacles.Add(obstacle);
+        // }
     }
 
-    public static void Init()
-    {
-        boids.Clear();
-    }
+    // public static void Init()
+    // {
+    //     Debug.Log("Init");
+    //     boids.Clear();
+    //     obstacles.Clear();
+    // }
 
     public static Boid GetClosestNeighbor(Boid current, Boid[] neighbors, int neighborCount)
     {
@@ -61,19 +98,19 @@ public static class Simulation
 
     public static Boid GetLeader(Boid current, Boid[] neighbors, int neighborCount)
     {
-        Boid leader = null;
+        int leaderIndex = -1;
         float maxForwardness = -1f;
         for (int i = 0; i < neighborCount; i++)
         {
             if (neighbors[i] == null) continue;
             if (!neighbors[i].IsAlive) continue;
-            if (neighbors[i] == leader) continue;
+            if (leaderIndex >= 0 && neighbors[i] == neighbors[leaderIndex]) continue;
             if (neighbors[i] == current) continue;
             if (current.ForwardnessTo(neighbors[i]) <= maxForwardness) continue;
-            leader = neighbors[i];
+            leaderIndex = i;
             maxForwardness = current.ForwardnessTo(neighbors[i]);
         }
-        return leader;
+        return leaderIndex >= 0 ? neighbors[leaderIndex] : null;
     }
 
     // public static Boid GetLeader(Boid current, Boid[] neighbors, int neighborCount)
@@ -108,17 +145,17 @@ public static class Simulation
     //     return leader;
     // }
 
-    public static int GetNeighbors(Boid current, Boid[] others, BoidStats stats)
+    public static int GetNeighbors(Boid current, Boid[] others)
     {
         int total = 0;
-        // PrepareCurrentBoidsArray(boids.Count);
         for (int i = 0; i < boids.Count; i++)
         {
             if (total >= others.Length) break;
             if (boids[i] == null) continue;
+            if (boids[i].Type != current.Type) continue;
             if (!boids[i].IsAlive) continue;
             if (current == boids[i]) continue;
-            if (!CanSeeOther(current, boids[i], stats.sightDistance)) continue;
+            if (!current.CanSee(boids[i])) continue;
 
             others[total] = boids[i];
             total++;
@@ -126,15 +163,55 @@ public static class Simulation
         return total;
     }
 
-    public static bool CanSeeOther(Boid current, Boid other, float sightDistance)
+    public static int GetObstaclesNearby(Boid current, Obstacle[] obstaclesNearby)
     {
-        return Vector2.Distance(current.transform.position, other.transform.position) <= sightDistance;
+        int total = 0;
+        for (int i = 0; i < obstacles.Count; i++)
+        {
+            if (total >= obstaclesNearby.Length) break;
+            if (obstacles[i] == null) continue;
+            if (!obstacles[i].isActiveAndEnabled) continue;
+            if (current == obstacles[i]) continue;
+            if (!current.CanSee(obstacles[i])) continue;
+
+            obstaclesNearby[total] = obstacles[i];
+            total++;
+        }
+        return total;
     }
 
-    // static void PrepareCurrentBoidsArray(float count)
-    // {
-    //     currentBoidIndex = 0;
-    //     if (count < currentBoids.Length) return;
-    //     currentBoids = new Boid[currentBoids.Length * 2];
-    // }
+    public static int GetPredatorsNearby(Boid current, Predator[] predatorsNearby)
+    {
+        int total = 0;
+        for (int i = 0; i < predators.Count; i++)
+        {
+            if (total >= predatorsNearby.Length) break;
+            if (predators[i] == null) continue;
+            if (!predators[i].isActiveAndEnabled) continue;
+            if (current == predators[i]) continue;
+            if (!current.CanSee(predators[i])) continue;
+
+            predatorsNearby[total] = predators[i];
+            total++;
+        }
+        return total;
+    }
+
+    public static Obstacle GetClosestObstacle(Boid current, ref Obstacle closestObstacle, Obstacle[] obstaclesNearby, int obstaclesNearbyCount)
+    {
+        closestObstacle = null;
+        float minDistance = Mathf.Infinity;
+        for (int i = 0; i < obstaclesNearbyCount; i++)
+        {
+            if (obstaclesNearby[i] == null) continue;
+            if (!obstaclesNearby[i].isActiveAndEnabled) continue;
+            if (obstaclesNearby[i] == closestObstacle) continue;
+            if (obstaclesNearby[i] == current) continue;
+            if (current.ForwardnessTo(obstaclesNearby[i]) <= 0) continue;
+            if (current.DistanceTo(obstaclesNearby[i]) >= minDistance) continue;
+            closestObstacle = obstaclesNearby[i];
+            minDistance = current.DistanceTo(obstaclesNearby[i]);
+        }
+        return closestObstacle;
+    }
 }
