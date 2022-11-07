@@ -7,6 +7,54 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 0.1804516
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 0.13333336
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.r
+      value: 0.9607843
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.b
+      value: 0.36078432
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.g
+      value: 0.581706
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.r
+      value: 0.8392157
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key2.b
+      value: 0.2588235
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key2.g
+      value: 0.82248324
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646695288136592699, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Parameters.colorGradient.key2.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2726001046110195226, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2726001046110195226, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: a24ee1a2e780b4ccab35d2c2dc2b5454, type: 2}
+    - target: {fileID: 3022245137468945617, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Radius
+      value: 0.58
+      objectReference: {fileID: 0}
     - target: {fileID: 8474355229086832000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Name
       value: BoidXenon
@@ -54,6 +102,22 @@ PrefabInstance:
     - target: {fileID: 8474355229086832001, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8474355229200189830, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Sprite

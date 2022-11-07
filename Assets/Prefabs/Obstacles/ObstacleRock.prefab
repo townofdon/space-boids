@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 0f624fde9f4124184ace7509493f27f0, type: 3}
+    - target: {fileID: 7837119443524008403, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
+      propertyPath: m_Mass
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7837119443524008412, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: avoidanceMod
       value: 1.5
@@ -70,6 +74,18 @@ PrefabInstance:
     - target: {fileID: 7837119443524008414, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: m_Name
       value: ObstacleRock
+      objectReference: {fileID: 0}
+    - target: {fileID: 9138391695710170086, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
+      propertyPath: m_Radius
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 9138391695710170086, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 9138391695710170086, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.03
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}

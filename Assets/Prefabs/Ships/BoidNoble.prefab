@@ -7,6 +7,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2726001046110195226, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3022245137468945617, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8474355229086832000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Name
       value: BoidNoble

@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2726001046110195226, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2726001046110195226, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: cb044da90cbcd4b81805288abffe5a16, type: 2}
+    - target: {fileID: 3022245137468945617, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_Radius
+      value: 0.68
+      objectReference: {fileID: 0}
     - target: {fileID: 8474355229086832000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Name
       value: BoidFreighter
@@ -54,6 +66,22 @@ PrefabInstance:
     - target: {fileID: 8474355229086832001, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474355229200189829, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8474355229200189830, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Sprite

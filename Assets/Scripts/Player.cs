@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,11 @@ public class Player : MonoBehaviour
 
     Vector2 move;
     Vector2 look;
+
+    void Start()
+    {
+        StartCoroutine(UpdateScreenStats());
+    }
 
     void OnMove(InputValue value)
     {
@@ -29,5 +35,14 @@ public class Player : MonoBehaviour
     void Update()
     {
         rb.velocity = move * moveSpeed;
+    }
+
+    IEnumerator UpdateScreenStats()
+    {
+        while (true)
+        {
+            Utils.InvalidateScreenStats();
+            yield return new WaitForSeconds(1f);
+        }
     }
 }

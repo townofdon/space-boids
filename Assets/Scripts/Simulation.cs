@@ -98,19 +98,29 @@ public static class Simulation
 
     public static Boid GetLeader(Boid current, Boid[] neighbors, int neighborCount)
     {
-        int leaderIndex = -1;
-        float maxForwardness = -1f;
+        // naive implementation - just return the first boid in the array
+        if (neighborCount <= 0) return null;
         for (int i = 0; i < neighborCount; i++)
         {
             if (neighbors[i] == null) continue;
             if (!neighbors[i].IsAlive) continue;
-            if (leaderIndex >= 0 && neighbors[i] == neighbors[leaderIndex]) continue;
             if (neighbors[i] == current) continue;
-            if (current.ForwardnessTo(neighbors[i]) <= maxForwardness) continue;
-            leaderIndex = i;
-            maxForwardness = current.ForwardnessTo(neighbors[i]);
+            return neighbors[i];
         }
-        return leaderIndex >= 0 ? neighbors[leaderIndex] : null;
+        return null;
+        // int leaderIndex = -1;
+        // float maxForwardness = -1f;
+        // for (int i = 0; i < neighborCount; i++)
+        // {
+        //     if (neighbors[i] == null) continue;
+        //     if (!neighbors[i].IsAlive) continue;
+        //     if (leaderIndex >= 0 && neighbors[i] == neighbors[leaderIndex]) continue;
+        //     if (neighbors[i] == current) continue;
+        //     if (current.ForwardnessTo(neighbors[i]) <= maxForwardness) continue;
+        //     leaderIndex = i;
+        //     maxForwardness = current.ForwardnessTo(neighbors[i]);
+        // }
+        // return leaderIndex >= 0 ? neighbors[leaderIndex] : null;
     }
 
     // public static Boid GetLeader(Boid current, Boid[] neighbors, int neighborCount)

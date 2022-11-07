@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// NEXT STEPS:
-// - get separation working - find closest 3?
-// - add obstacles
-
 public class Boid : MonoBehaviour
 {
     public enum BoidType
@@ -24,15 +20,11 @@ public class Boid : MonoBehaviour
 
     // cached
     Rigidbody2D rb;
-    ScreenStats _screenStats;
-    ScreenStats screenStats
-    {
-        get { if (_screenStats == null) _screenStats = Utils.GetScreenStats(); return _screenStats; }
-        set { _screenStats = value; }
-    }
+    CircleCollider2D circle;
 
     // state
     float rotationSpeed = 360f;
+    float timeSinceLastPerceived = float.MaxValue;
 
     Boid leader;
     Boid[] neighbors = new Boid[100];
@@ -51,6 +43,7 @@ public class Boid : MonoBehaviour
     Vector2 separation;
     Vector2 alignment;
     Vector2 followTheLeader;
+    Vector2 makeWayForLeader;
     Vector2 avoidance;
 
     float closeness;
@@ -61,7 +54,8 @@ public class Boid : MonoBehaviour
     Quaternion desiredRotation = Quaternion.identity;
     float steeringVarianceTime = Mathf.Infinity;
 
-    static bool didInvalidateScreenStats;
+    RaycastHit2D wallHit;
+    Ray2D wallCheckRay = new Ray2D();
 
     // public
     public BoidType Type => type;
@@ -79,6 +73,12 @@ public class Boid : MonoBehaviour
     {
         if (other == null) return false;
         return Vector2.Dot(other.position - position, velocity) > 0f;
+    }
+
+    public bool IsOtherAlive(Boid other)
+    {
+        if (other == null) return false;
+        return other.IsAlive;
     }
 
     public float ForwardnessTo(Boid other) { return ForwardnessTo(other.transform); }
@@ -152,18 +152,14 @@ public class Boid : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        // if (!didInitSimulation)
-        // {
-        //     didInitSimulation = true;
-        //     Simulation.Init();
-        // }
+        circle = GetComponent<CircleCollider2D>();
     }
 
     void Start()
     {
         if (rb == null) Debug.LogWarning($"You need to add a rigidbody2d to the Boid script for \"{gameObject.name}\"");
-        StartCoroutine(InvalidateScreenStats());
         desiredHeading = transform.up;
+        StartCoroutine(LookForWalls());
     }
 
     void Update()
@@ -176,7 +172,8 @@ public class Boid : MonoBehaviour
         Avoidance();
         RunFromPredators();
         desiredHeading = VaryHeading();
-        desiredHeading = ReflectOffScreenEdges();
+        if (stats.reflectOffScreenEdges) desiredHeading = ReflectOffScreenEdges();
+        desiredHeading = AvoidWalls();
         ChangeHeading();
         Move();
         DebugSimulation();
@@ -184,12 +181,18 @@ public class Boid : MonoBehaviour
 
     void PerceiveEnvironment()
     {
+        rotationSpeed = stats.rotationSpeed;
+        if (timeSinceLastPerceived < stats.awarenessLatency)
+        {
+            timeSinceLastPerceived += Time.deltaTime;
+            return;
+        }
+        timeSinceLastPerceived = 0f;
         neighborCount = Simulation.GetNeighbors(this, neighbors);
         leader = Simulation.GetLeader(this, neighbors, neighborCount);
         neighborCountQuotient = neighborCount == 0 ? 1f : 1f / neighborCount;
         obstaclesNearbyCount = Simulation.GetObstaclesNearby(this, obstaclesNearby);
         predatorsNearbyCount = Simulation.GetPredatorsNearby(this, predatorsNearby);
-        rotationSpeed = stats.rotationSpeed;
     }
 
     void Cohesion()
@@ -200,6 +203,7 @@ public class Boid : MonoBehaviour
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
         {
+            if (!IsOtherAlive(neighbors[i])) continue;
             cohesion += neighbors[i].position;
         }
         cohesion *= neighborCountQuotient;
@@ -217,6 +221,7 @@ public class Boid : MonoBehaviour
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
         {
+            if (!IsOtherAlive(neighbors[i])) continue;
             closeness = Mathf.Clamp01((stats.sightDistance - DistanceTo(neighbors[i])) / stats.sightDistance);
             closeness = Mathf.Clamp01(stats.closenessMod.Evaluate(closeness));
             separation += HeadingFrom(neighbors[i]) * closeness;
@@ -232,6 +237,7 @@ public class Boid : MonoBehaviour
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
         {
+            if (!IsOtherAlive(neighbors[i])) continue;
             alignment += neighbors[i].velocity;
         }
         alignment *= neighborCountQuotient;
@@ -241,11 +247,12 @@ public class Boid : MonoBehaviour
 
     void FollowTheLeader()
     {
+        // I'm not convinced this is working as expected...
         followTheLeader = Vector2.zero;
         if (stats.followTheLeader <= 0) return;
         if (neighborCount == 0) return;
         if (leader == null) return;
-        followTheLeader = leader.position - position;
+        followTheLeader = leader.position - leader.velocity - position;
         followTheLeader = followTheLeader.normalized;
         desiredHeading += followTheLeader * stats.followTheLeader;
     }
@@ -286,7 +293,7 @@ public class Boid : MonoBehaviour
             closeness = closeness * stats.predatorFleeMod.Evaluate(closeness) * predatorsNearby[i].scarinessMod;
             avoidance += HeadingFrom(predatorsNearby[i]) * closeness;
         }
-        desiredHeading += avoidance * stats.avoidance * 4f;
+        desiredHeading += avoidance * stats.runFromPredators * 4f;
     }
 
     void ChangeHeading()
@@ -318,38 +325,50 @@ public class Boid : MonoBehaviour
 
     Vector2 ReflectOffScreenEdges()
     {
-        if (position.y > screenStats.upperRightBounds.y) return desiredHeading.normalized * 0.2f + Vector2.down;
-        if (position.y < screenStats.lowerLeftBounds.y) return desiredHeading.normalized * 0.2f + Vector2.up;
-        if (position.x > screenStats.upperRightBounds.x) return desiredHeading.normalized * 0.2f + Vector2.left;
-        if (position.x < screenStats.lowerLeftBounds.x) return desiredHeading.normalized * 0.2f + Vector2.right;
+        if (position.y > Utils.GetScreenStats().upperRightBounds.y) return desiredHeading.normalized * 0.2f + Vector2.down;
+        if (position.y < Utils.GetScreenStats().lowerLeftBounds.y) return desiredHeading.normalized * 0.2f + Vector2.up;
+        if (position.x > Utils.GetScreenStats().upperRightBounds.x) return desiredHeading.normalized * 0.2f + Vector2.left;
+        if (position.x < Utils.GetScreenStats().lowerLeftBounds.x) return desiredHeading.normalized * 0.2f + Vector2.right;
 
         sightVector = position + velocity * (CIRCUMFERENCE_TO_RADIUS_QUOTIENT * 2f) + velocity.normalized * size;
 
-        if (sightVector.y > screenStats.upperRightBounds.y && Vector2.Dot(desiredHeading, Vector2.down) <= 0f)
+        if (sightVector.y > Utils.GetScreenStats().upperRightBounds.y && Vector2.Dot(desiredHeading, Vector2.down) <= 0f)
             return (Vector2.Reflect(desiredHeading, Vector2.down) + Vector2.down).normalized;
 
-        if (sightVector.y < screenStats.lowerLeftBounds.y && Vector2.Dot(desiredHeading, Vector2.up) <= 0f)
+        if (sightVector.y < Utils.GetScreenStats().lowerLeftBounds.y && Vector2.Dot(desiredHeading, Vector2.up) <= 0f)
             return (Vector2.Reflect(desiredHeading, Vector2.up) + Vector2.up).normalized;
 
-        if (sightVector.x > screenStats.upperRightBounds.x && Vector2.Dot(desiredHeading, Vector2.left) <= 0f)
+        if (sightVector.x > Utils.GetScreenStats().upperRightBounds.x && Vector2.Dot(desiredHeading, Vector2.left) <= 0f)
             return (Vector2.Reflect(desiredHeading, Vector2.left) + Vector2.left).normalized;
 
-        if (sightVector.x < screenStats.lowerLeftBounds.x && Vector2.Dot(desiredHeading, Vector2.right) <= 0f)
+        if (sightVector.x < Utils.GetScreenStats().lowerLeftBounds.x && Vector2.Dot(desiredHeading, Vector2.right) <= 0f)
             return (Vector2.Reflect(desiredHeading, Vector2.right) + Vector2.right).normalized;
 
         return desiredHeading;
     }
 
-    IEnumerator InvalidateScreenStats()
+    Vector2 AvoidWalls()
     {
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
-        if (!didInvalidateScreenStats)
+        if (!wallHit) return desiredHeading;
+        if (wallHit.collider == null) return desiredHeading;
+        float wallAvoidance = stats.wallAvoidanceMod.Evaluate((stats.sightDistance - wallHit.distance) / stats.sightDistance);
+        return Vector2.Lerp(desiredHeading, wallHit.normal, wallAvoidance);
+    }
+
+    void RaycastWalls()
+    {
+        wallCheckRay.origin = transform.position;
+        wallCheckRay.direction = transform.up;
+        wallHit = Physics2D.Raycast(wallCheckRay.origin, wallCheckRay.direction, stats.sightDistance, stats.wallLayer);
+    }
+
+    IEnumerator LookForWalls()
+    {
+        while (true)
         {
-            didInvalidateScreenStats = true;
-            Utils.InvalidateScreenStats();
+            yield return new WaitForSeconds(stats.wallRaycastLatency + UnityEngine.Random.Range(0f, stats.wallRaycastVariance));
+            RaycastWalls();
         }
-        screenStats = null;
     }
 
     void OnDrawGizmos()
@@ -365,18 +384,20 @@ public class Boid : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + (Vector3)(desiredHeading * stats.sightDistance));
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, (Vector3)(sightVector));
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(wallCheckRay.origin, wallCheckRay.origin + wallCheckRay.direction * stats.sightDistance);
         if (leader != null)
         {
             Gizmos.color = Color.yellow.toAlpha(0.5f);
             Gizmos.DrawSphere(leader.transform.position, 0.5f);
         }
-        if (screenStats != null)
+        if (Utils.GetScreenStats() != null)
         {
             Gizmos.color = Color.blue;
-            Vector2 TL = new Vector2(screenStats.lowerLeftBounds.x, screenStats.upperRightBounds.y);
-            Vector2 TR = new Vector2(screenStats.upperRightBounds.x, screenStats.upperRightBounds.y);
-            Vector2 BL = new Vector2(screenStats.lowerLeftBounds.x, screenStats.lowerLeftBounds.y);
-            Vector2 BR = new Vector2(screenStats.upperRightBounds.x, screenStats.lowerLeftBounds.y);
+            Vector2 TL = new Vector2(Utils.GetScreenStats().lowerLeftBounds.x, Utils.GetScreenStats().upperRightBounds.y);
+            Vector2 TR = new Vector2(Utils.GetScreenStats().upperRightBounds.x, Utils.GetScreenStats().upperRightBounds.y);
+            Vector2 BL = new Vector2(Utils.GetScreenStats().lowerLeftBounds.x, Utils.GetScreenStats().lowerLeftBounds.y);
+            Vector2 BR = new Vector2(Utils.GetScreenStats().upperRightBounds.x, Utils.GetScreenStats().lowerLeftBounds.y);
             Gizmos.DrawLine(TL, TR);
             Gizmos.DrawLine(TR, BR);
             Gizmos.DrawLine(BR, BL);
@@ -413,6 +434,7 @@ public class Boid : MonoBehaviour
 
     void DebugSimulation()
     {
+        if (!debug) return;
         _debug_simulation_boids = Simulation._debug_boids.Count;
         _debug_simulation_obstacles = Simulation._debug_obstacles.Count;
     }

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   rotationSpeed: 360
+  awarenessLatency: 0.2
+  reflectOffScreenEdges: 0
   sightDistance: 7
   steeringVariance: 0.2
   steeringVarianceTimeStep: 0.5
@@ -115,6 +117,44 @@ MonoBehaviour:
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.24583334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  wallRaycastLatency: 0.2
+  wallRaycastVariance: 0.1
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  wallAvoidanceMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.010482181
+      outSlope: 0.010482181
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.83319616
+    - serializedVersion: 3
+      time: 0.27004445
+      value: 0.7709292
+      inSlope: 1.0091623
+      outSlope: 1.0091623
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.16893242
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.19166666
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

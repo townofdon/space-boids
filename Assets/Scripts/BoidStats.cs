@@ -5,10 +5,12 @@ public class BoidStats : ScriptableObject
 {
     public float moveSpeed = 5f;
     public float rotationSpeed = 360f;
+    public float awarenessLatency = 0.2f;
 
     [Space]
     [Space]
 
+    public bool reflectOffScreenEdges;
     public float sightDistance = 5f;
     public float steeringVariance = .5f;
     public float steeringVarianceTimeStep = .3f;
@@ -31,8 +33,13 @@ public class BoidStats : ScriptableObject
     public float avoidanceStrength = 1f;
     public float avoidanceRotationMod = 2f;
 
+    public AnimationCurve predatorFleeMod = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+
     [Space]
     [Space]
 
-    public AnimationCurve predatorFleeMod = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+    public float wallRaycastLatency = 0.2f;
+    public float wallRaycastVariance = 0.1f;
+    public LayerMask wallLayer;
+    public AnimationCurve wallAvoidanceMod = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 }

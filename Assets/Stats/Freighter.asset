@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1b3aa49afc04204ac64b0aded7b7a2, type: 3}
+  m_Name: Freighter
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  rotationSpeed: 90
+  awarenessLatency: 0.2
+  reflectOffScreenEdges: 0
+  sightDistance: 9
+  steeringVariance: 0.44
+  steeringVarianceTimeStep: 0.5
+  cohesion: 0.073
+  separation: 0.116
+  alignment: 0.191
+  followTheLeader: 0
+  avoidance: 1
+  runFromPredators: 0.02
+  closenessMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.0023498535
+      inSlope: 0.011594095
+      outSlope: 0.011594095
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.20416667
+    - serializedVersion: 3
+      time: 0.6263542
+      value: 0.5015082
+      inSlope: 2.4298725
+      outSlope: 2.4298725
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07357921
+      outWeight: 0.087032534
+    - serializedVersion: 3
+      time: 0.7842579
+      value: 0.88418704
+      inSlope: 0.9019941
+      outSlope: 0.9019941
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.48651975
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.02021568
+      outSlope: 0.02021568
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.23333335
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  avoidanceTension: 3
+  avoidanceStrength: 1
+  avoidanceRotationMod: 2
+  predatorFleeMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0041656494
+      value: 0
+      inSlope: 0.013805716
+      outSlope: 0.013805716
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 1
+    - serializedVersion: 3
+      time: 0.05397289
+      value: 0.19353369
+      inSlope: 9.593683
+      outSlope: 9.593683
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24707696
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.060428575
+      value: 0.50289583
+      inSlope: 5.761166
+      outSlope: 5.761166
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.3440575
+    - serializedVersion: 3
+      time: 0.114890665
+      value: 0.70524144
+      inSlope: 1.1813804
+      outSlope: 1.1813804
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.13453704
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.03837553
+      outSlope: 0.03837553
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24583334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  wallRaycastLatency: 1
+  wallRaycastVariance: 0.6
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  wallAvoidanceMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.010482181
+      outSlope: 0.010482181
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.83319616
+    - serializedVersion: 3
+      time: 0.27004445
+      value: 0.7709292
+      inSlope: 1.0091623
+      outSlope: 1.0091623
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.16893242
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.19166666
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
