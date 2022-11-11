@@ -19,6 +19,34 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.68
       objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Path
+      value: event:/Boid/Freighter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data1
+      value: 1497441294
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data2
+      value: 1279492222
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data3
+      value: -12920432
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data4
+      value: -1498987900
+      objectReference: {fileID: 0}
     - target: {fileID: 8474355229086832000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Name
       value: BoidFreighter

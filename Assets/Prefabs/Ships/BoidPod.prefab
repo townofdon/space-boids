@@ -11,6 +11,34 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Path
+      value: event:/Boid/Pod
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data1
+      value: 1594164830
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data2
+      value: 1338318027
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data3
+      value: -1837307208
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data4
+      value: -1005207374
+      objectReference: {fileID: 0}
     - target: {fileID: 8474355229086832000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Name
       value: BoidPod

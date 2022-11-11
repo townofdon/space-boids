@@ -55,6 +55,34 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.58
       objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Path
+      value: event:/Boid/Xenon
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data1
+      value: 714557642
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data2
+      value: 1188645191
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data3
+      value: 62214531
+      objectReference: {fileID: 0}
+    - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: EventReference.Guid.Data4
+      value: 332572809
+      objectReference: {fileID: 0}
     - target: {fileID: 8474355229086832000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Name
       value: BoidXenon

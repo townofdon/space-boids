@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using FMODUnity;
 
 public class Boid : MonoBehaviour
 {
@@ -21,6 +21,7 @@ public class Boid : MonoBehaviour
     // cached
     Rigidbody2D rb;
     CircleCollider2D circle;
+    StudioEventEmitter emitter;
 
     // state
     float rotationSpeed = 360f;
@@ -143,17 +144,26 @@ public class Boid : MonoBehaviour
     void OnEnable()
     {
         Simulation.RegisterBoid(this);
+        GlobalEvent.Subscribe(OnGlobalEvent);
+
     }
 
     void OnDisable()
     {
         Simulation.DeregisterBoid(this);
+        GlobalEvent.Unsubscribe(OnGlobalEvent);
+    }
+
+    void OnGlobalEvent(GlobalEvent.type eventType)
+    {
+        if (eventType == GlobalEvent.type.SIMULATION_START) emitter.Play();
     }
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         circle = GetComponent<CircleCollider2D>();
+        emitter = GetComponent<StudioEventEmitter>();
     }
 
     void Start()
