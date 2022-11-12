@@ -7,6 +7,7 @@ public static class Simulation
     static List<Boid> boids = new List<Boid>();
     static List<Obstacle> obstacles = new List<Obstacle>();
     static List<Predator> predators = new List<Predator>();
+    static List<Food> foods = new List<Food>();
 
     public static List<Boid> _debug_boids => boids;
     public static List<Obstacle> _debug_obstacles => obstacles;
@@ -52,6 +53,18 @@ public static class Simulation
     {
         if (!predators.Contains(current)) return;
         predators.Remove(current);
+    }
+
+    public static void RegisterFood(Food current)
+    {
+        if (foods.Contains(current)) return;
+        foods.Add(current);
+    }
+
+    public static void DeregisterFood(Food current)
+    {
+        if (!foods.Contains(current)) return;
+        foods.Remove(current);
     }
 
     [UnityEditor.Callbacks.DidReloadScripts]
@@ -230,5 +243,47 @@ public static class Simulation
             minDistance = current.DistanceTo(obstaclesNearby[i]);
         }
         return closestObstacle;
+    }
+
+    public static int GetFoods(Boid current, Food[] currentBoidFoods)
+    {
+        int total = 0;
+        for (int i = 0; i < foods.Count; i++)
+        {
+            if (total >= currentBoidFoods.Length) break;
+            if (foods[i] == null) continue;
+            if (foods[i].isEaten) continue;
+            if (foods[i].foodType != current.GetFoodType()) continue;
+            if (!foods[i].isActiveAndEnabled) continue;
+
+            currentBoidFoods[total] = foods[i];
+            total++;
+        }
+        return total;
+    }
+
+    public static Food GetClosestFood(Boid current, Food[] foods, int foodCount)
+    {
+        Food closest = null;
+        float closestDistance = Mathf.Infinity;
+        float currentDistance = Mathf.Infinity;
+        for (int i = 0; i < foodCount; i++)
+        {
+            if (foods[i] == null) continue;
+            if (foods[i].isEaten) continue;
+            if (foods[i].foodType != current.GetFoodType()) continue;
+            if (closest == null)
+            {
+                closest = foods[i];
+                continue;
+            }
+            currentDistance = Vector2.Distance(current.transform.position, foods[i].transform.position);
+            if (currentDistance < closestDistance)
+            {
+                closest = foods[i];
+                closestDistance = currentDistance;
+            }
+        }
+        return closest;
     }
 }

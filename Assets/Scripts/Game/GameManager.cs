@@ -2,14 +2,47 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+
+    public GameState state;
+
+    public void SetCohesion(float val)
+    {
+        state.cohesion = val;
+    }
+
+    public void SetSeparation(float val)
+    {
+        state.separation = val;
+    }
+
+    public void SetAlignment(float val)
+    {
+        state.alignment = val;
+    }
+
+    public void SetAvoidPredators(float val)
+    {
+        state.avoidPredators = val;
+    }
+
+    public void SetSeekFood(float val)
+    {
+        state.seekFood = val;
+    }
+
     void OnEnable()
     {
         GlobalEvent.Subscribe(OnGlobalEvent);
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         GlobalEvent.Unsubscribe(OnGlobalEvent);
+    }
+
+    void Awake()
+    {
+        state = new GameState();
     }
 
     void Start()

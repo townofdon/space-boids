@@ -10,7 +10,6 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float rotationSpeed = 360f;
     [SerializeField] float cardinality = 45f;
 
     [Space]
@@ -27,34 +26,44 @@ public class Player : MonoBehaviour
     ParticleSystem.EmissionModule rightEmission;
 
     Rigidbody2D rb;
+    SettingsMenu settings;
 
     Vector2 move;
     Vector2 look;
     Quaternion desiredRotation;
 
-    void Start()
-    {
-        desiredRotation = transform.rotation;
-        StartCoroutine(UpdateScreenStats());
-    }
-
+    // PlayerInput message
     void OnMove(InputValue value)
     {
         move = value.Get<Vector2>();
     }
 
+    // PlayerInput message
     void OnLook(InputValue value)
     {
         look = value.Get<Vector2>();
     }
 
+    // PlayerInput message
+    void OnSettings(InputValue value)
+    {
+        settings.ToggleMenu();
+    }
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        settings = FindObjectOfType<SettingsMenu>();
         leftEmission = leftTrail.emission;
         rightEmission = rightTrail.emission;
         leftEmission.rateOverTime = 0f;
         rightEmission.rateOverTime = 0f;
+    }
+
+    void Start()
+    {
+        desiredRotation = transform.rotation;
+        StartCoroutine(UpdateScreenStats());
     }
 
     void Update()
@@ -66,6 +75,7 @@ public class Player : MonoBehaviour
 
     void Move()
     {
+        if (Simulation.speed <= 0.1f + Mathf.Epsilon) rb.velocity = Vector2.zero;
         rb.velocity = move * moveSpeed * Simulation.speed;
     }
 

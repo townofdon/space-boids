@@ -114,9 +114,9 @@ TrailRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1089263841
-  m_SortingLayer: 1
-  m_SortingOrder: 1
+  m_SortingLayerID: -1945782867
+  m_SortingLayer: 3
+  m_SortingOrder: -1
   m_Time: 1
   m_Parameters:
     serializedVersion: 3
@@ -255,7 +255,7 @@ MonoBehaviour:
   - {x: 5, y: -5, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: -361654
+  m_InstanceId: 653390
 --- !u!1 &8474355229200189828
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,7 +327,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1945782867
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: afccd6c29779a4be1bb85fc65aea46a2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

@@ -25,6 +25,7 @@ public class BoidStats : ScriptableObject
     [Range(0f, 1f)] public float followTheLeader = .5f;
     [Range(0f, 1f)] public float avoidance = .5f;
     [Range(0f, 1f)] public float runFromPredators = 1f;
+    [Range(0f, 1f)] public float seekFood = 1f;
 
     [Space]
     [Space]

@@ -18,10 +18,26 @@ public class Boid : MonoBehaviour
     [SerializeField] BoidStats stats;
     [SerializeField] float size = 0.5f;
 
+    public Food.FoodType GetFoodType()
+    {
+        switch (type)
+        {
+            case BoidType.Pod:
+                return Food.FoodType.Pod;
+            case BoidType.Xenon:
+                return Food.FoodType.Xenon;
+            case BoidType.Freighter:
+                return Food.FoodType.Freighter;
+            default:
+                return Food.FoodType.Pod;
+        }
+    }
+
     // cached
     Rigidbody2D rb;
     CircleCollider2D circle;
     StudioEventEmitter emitter;
+    GameManager gameManager;
 
     // state
     float rotationSpeed = 360f;
@@ -39,6 +55,10 @@ public class Boid : MonoBehaviour
     Predator[] predatorsNearby = new Predator[20];
     int predatorsNearbyCount = 0;
 
+    Food[] foods = new Food[20];
+    Food closestFood;
+    int foodsCount = 0;
+
     Vector2 neighborCentroidHeading;
 
     Vector2 cohesion;
@@ -47,6 +67,7 @@ public class Boid : MonoBehaviour
     Vector2 followTheLeader;
     Vector2 makeWayForLeader;
     Vector2 avoidance;
+    Vector2 seekFood;
 
     float closeness;
     float maxCloseness;
@@ -164,6 +185,7 @@ public class Boid : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         circle = GetComponent<CircleCollider2D>();
         emitter = GetComponent<StudioEventEmitter>();
+        gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
     }
 
     void Start()
@@ -179,6 +201,7 @@ public class Boid : MonoBehaviour
         PerceiveEnvironment();
         Cohesion();
         Alignment();
+        SeekFood();
         FollowTheLeader();
         Separation();
         Avoidance();
@@ -188,6 +211,7 @@ public class Boid : MonoBehaviour
         desiredHeading = AvoidWalls();
         ChangeHeading();
         Move();
+        CheckFoodChomp();
         DebugSimulation();
     }
 
@@ -206,12 +230,14 @@ public class Boid : MonoBehaviour
         neighborCountQuotient = neighborCount == 0 ? 1f : 1f / neighborCount;
         obstaclesNearbyCount = Simulation.GetObstaclesNearby(this, obstaclesNearby);
         predatorsNearbyCount = Simulation.GetPredatorsNearby(this, predatorsNearby);
+        foodsCount = Simulation.GetFoods(this, foods);
+        closestFood = Simulation.GetClosestFood(this, foods, foodsCount);
     }
 
     void Cohesion()
     {
         cohesion = Vector2.zero;
-        if (stats.cohesion <= 0) return;
+        if (CalcStat(stats.cohesion, gameManager.state.cohesion) <= 0) return;
         if (neighborCount == 0) return;
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
@@ -222,14 +248,14 @@ public class Boid : MonoBehaviour
         cohesion *= neighborCountQuotient;
         neighborCentroidHeading = (cohesion - position);
         cohesion = neighborCentroidHeading.normalized;
-        desiredHeading += cohesion * stats.cohesion;
+        desiredHeading += cohesion * CalcStat(stats.cohesion, gameManager.state.cohesion);
     }
 
     void Separation()
     {
         separation = Vector2.zero;
         closeness = 0f;
-        if (stats.separation <= 0) return;
+        if (CalcStat(stats.separation, gameManager.state.separation) <= 0) return;
         if (neighborCount == 0) return;
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
@@ -239,13 +265,13 @@ public class Boid : MonoBehaviour
             closeness = Mathf.Clamp01(stats.closenessMod.Evaluate(closeness));
             separation += HeadingFrom(neighbors[i]) * closeness;
         }
-        desiredHeading += separation * stats.separation;
+        desiredHeading += separation * CalcStat(stats.separation, gameManager.state.separation);
     }
 
     void Alignment()
     {
         alignment = Vector2.zero;
-        if (stats.alignment <= 0) return;
+        if (CalcStat(stats.alignment, gameManager.state.alignment) <= 0) return;
         if (neighborCount == 0) return;
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
@@ -255,7 +281,7 @@ public class Boid : MonoBehaviour
         }
         alignment *= neighborCountQuotient;
         alignment = alignment.normalized;
-        desiredHeading += alignment * stats.alignment;
+        desiredHeading += alignment * CalcStat(stats.alignment, gameManager.state.alignment);
     }
 
     void FollowTheLeader()
@@ -290,14 +316,24 @@ public class Boid : MonoBehaviour
             avoidance += HeadingFrom(obstaclesNearby[i]) * closeness;
         }
         rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, maxCloseness);
-        desiredHeading += avoidance * stats.avoidance * 2f;
+        desiredHeading += avoidance * 2f;
+    }
+
+    void SeekFood()
+    {
+        seekFood = Vector2.zero;
+        if (CalcStat(stats.seekFood, gameManager.state.seekFood) <= 0) return;
+        if (foodsCount == 0) return;
+        if (closestFood == null) return;
+        seekFood = (closestFood.transform.position - transform.position).normalized;
+        desiredHeading += seekFood * CalcStat(stats.seekFood, gameManager.state.seekFood);
     }
 
     void RunFromPredators()
     {
         avoidance = Vector2.zero;
         closeness = 0f;
-        if (stats.runFromPredators <= 0) return;
+        if (CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) <= 0) return;
         if (predatorsNearbyCount == 0) return;
         for (int i = 0; i < predatorsNearbyCount; i++)
         {
@@ -306,20 +342,35 @@ public class Boid : MonoBehaviour
             closeness = closeness * stats.predatorFleeMod.Evaluate(closeness) * predatorsNearby[i].scarinessMod;
             avoidance += HeadingFrom(predatorsNearby[i]) * closeness;
         }
-        desiredHeading += avoidance * stats.runFromPredators * 4f;
+        desiredHeading += avoidance * CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) * 4f;
     }
 
     void ChangeHeading()
     {
         desiredHeading = desiredHeading.normalized;
         desiredRotation = Quaternion.Euler(0f, 0f, Vector2.SignedAngle(Vector2.up, desiredHeading));
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, rotationSpeed * Simulation.speed * Time.deltaTime);
     }
 
     void Move()
     {
         if (rb == null) return;
         rb.velocity = transform.up * stats.moveSpeed * Simulation.speed;
+    }
+
+    void CheckFoodChomp()
+    {
+        if (closestFood == null) return;
+        if (Vector2.Distance(closestFood.transform.position, transform.position) <= .4f) closestFood.GetChomped();
+    }
+
+    float CalcStat(float stat, float globalStat)
+    {
+        if (globalStat >= 1f)
+        {
+            return Mathf.Lerp(stat, 1f, globalStat - 1f);
+        }
+        return stat * globalStat;
     }
 
     Vector2 VaryHeading()
