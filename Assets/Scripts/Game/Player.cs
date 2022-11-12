@@ -2,11 +2,29 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+// NOTE - I combined all of the player functionality into a single script for sheer convenience.
+// In an actual game I would have definitely split out various functions into separate script,
+// e.g. control, movement, FX, etc.
+
 public class Player : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float rotationSpeed = 360f;
     [SerializeField] float cardinality = 45f;
+
+    [Space]
+    [Space]
+
+    [SerializeField] ParticleSystem leftTrail;
+    [SerializeField] ParticleSystem rightTrail;
+    [SerializeField] float exhaustRate = 20f;
+    [SerializeField] AnimationCurve velocityExhaustMod = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+
+    ParticleSystem.MainModule leftFXModule;
+    ParticleSystem.MainModule rightFXModule;
+    ParticleSystem.EmissionModule leftEmission;
+    ParticleSystem.EmissionModule rightEmission;
 
     Rigidbody2D rb;
 
@@ -33,18 +51,38 @@ public class Player : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        leftEmission = leftTrail.emission;
+        rightEmission = rightTrail.emission;
+        leftEmission.rateOverTime = 0f;
+        rightEmission.rateOverTime = 0f;
     }
 
     void Update()
     {
+        Move();
+        Rotate();
+        ManageTrails();
+    }
+
+    void Move()
+    {
         rb.velocity = move * moveSpeed * Simulation.speed;
-        if (rb.velocity.magnitude > Mathf.Epsilon)
-        {
-            float angle = Vector2.SignedAngle(Vector2.up, rb.velocity);
-            angle = angle - angle % cardinality;
-            desiredRotation = Quaternion.Euler(0f, 0f, angle);
-            transform.rotation = desiredRotation;
-        }
+    }
+
+    void Rotate()
+    {
+        if (rb.velocity.magnitude <= Mathf.Epsilon) return;
+        float angle = Vector2.SignedAngle(Vector2.up, rb.velocity);
+        angle = angle - angle % cardinality;
+        desiredRotation = Quaternion.Euler(0f, 0f, angle);
+        transform.rotation = desiredRotation;
+    }
+
+    void ManageTrails()
+    {
+        float exhaust = exhaustRate * velocityExhaustMod.Evaluate(Mathf.Clamp01(rb.velocity.magnitude / moveSpeed));
+        leftEmission.rateOverTime = exhaust;
+        rightEmission.rateOverTime = exhaust;
     }
 
     IEnumerator UpdateScreenStats()

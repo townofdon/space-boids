@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 7837119443524008403}
   - component: {fileID: 7837119443524008412}
   - component: {fileID: 9138391695710170086}
+  - component: {fileID: 631725922789822193}
   m_Layer: 7
   m_Name: _BaseObstacle
   m_TagString: Untagged
@@ -172,3 +173,32 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &631725922789822193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7837119443524008414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 0
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000e1d8ec40adb5058cb7268787ef46e76d25fa3bea
+  m_ShapePath:
+  - {x: -0.2559895, y: -0.43221927, z: 0}
+  - {x: -0.49734074, y: 0.0033890498, z: 0}
+  - {x: -0.25090593, y: 0.43052474, z: 0}
+  - {x: 0.2526005, y: 0.43899733, z: 0}
+  - {x: 0.49491653, y: 0.0083552, z: 0}
+  - {x: 0.25671932, y: -0.4304074, z: 0}
+  m_ShapePathHash: 2080654039
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -499410
