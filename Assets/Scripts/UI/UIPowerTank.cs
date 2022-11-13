@@ -15,7 +15,7 @@ public class UIPowerTank : MonoBehaviour
 
     Image filledImg;
 
-    bool isAcquired = true;
+    bool isAcquired = false;
     bool isActive = false;
 
     public void SetActive(bool value)

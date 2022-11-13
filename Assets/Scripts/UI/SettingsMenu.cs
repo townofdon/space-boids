@@ -1,11 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using DG.Tweening;
+using FMODUnity;
 
 public class SettingsMenu : MonoBehaviour
 {
     [SerializeField] float animationTime = 1f;
     [SerializeField] RectTransform rect;
+
+    [Space]
+    [Space]
+
+    [SerializeField] StudioEventEmitter openSound;
+    [SerializeField] StudioEventEmitter closeSound;
 
     Tween minTween;
     Tween maxTween;
@@ -31,8 +39,8 @@ public class SettingsMenu : MonoBehaviour
 
     public void OpenMenu()
     {
-        // TODO: ADD SOUND - "retract"
         isMenuOpen = true;
+        openSound.Play();
         PrepareMenuMovement();
         minTween = rect.DOAnchorMin(new Vector2(0.5f, 0f), animationTime);
         maxTween = rect.DOAnchorMin(new Vector2(0.5f, 0f), animationTime);
@@ -42,17 +50,20 @@ public class SettingsMenu : MonoBehaviour
             foreach (var slider in sliders) slider.interactable = true;
             sliders[0].Select();
         });
+        GlobalEvent.Invoke(GlobalEvent.type.OPEN_MENU);
     }
 
     public void CloseMenu()
     {
-        // TODO: ADD SOUND
         isMenuOpen = false;
+        closeSound.Play();
         PrepareMenuMovement();
         foreach (var slider in sliders) slider.interactable = false;
         minTween = rect.DOAnchorMin(origMinAnchors, animationTime);
         maxTween = rect.DOAnchorMax(origMaxAnchors, animationTime);
         timeTween = DOTween.To(() => Simulation.speed, (x) => Simulation.SetSimulationSpeed(x), 1f, animationTime);
+        GlobalEvent.Invoke(GlobalEvent.type.CLOSE_MENU);
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     void Awake()

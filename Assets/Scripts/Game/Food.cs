@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using FMODUnity;
 
 public class Food : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Food : MonoBehaviour
 
     [SerializeField] public FoodType foodType;
     [SerializeField] float hp = 3f;
+    [SerializeField] float lifetime = 30f;
 
     [Space]
     [Space]
@@ -29,6 +31,12 @@ public class Food : MonoBehaviour
     [SerializeField] ParticleSystem chompedFX;
     [SerializeField] new Light2D light;
 
+    [Space]
+    [Space]
+
+    [SerializeField] StudioEventEmitter chompSound;
+    [SerializeField] StudioEventEmitter perishSound;
+
     SpriteRenderer spriteRenderer;
 
     public bool isEaten = false;
@@ -39,11 +47,13 @@ public class Food : MonoBehaviour
     float timeSinceLastChomped = float.MaxValue;
     Tween intensify;
 
+    float t;
+
     // animation event
     public void SetLightIntensity(float value)
     {
         if (isEaten) return;
-        intensify.Kill();
+        if (intensify != null) intensify.Kill();
         intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, value, timeSinceLastAnimationEvent).SetEase(Ease.Linear);
         timeSinceLastAnimationEvent = 0f;
     }
@@ -62,8 +72,7 @@ public class Food : MonoBehaviour
         else
         {
             chompedFX.Play();
-
-            // TODO: PLAY SOUND
+            chompSound.Play();
         }
     }
 
@@ -92,14 +101,15 @@ public class Food : MonoBehaviour
     {
         timeSinceLastAnimationEvent += Time.deltaTime;
         timeSinceLastChomped += Time.deltaTime;
+        t += Time.deltaTime * Simulation.speed;
+        if (t >= lifetime) Perish();
     }
 
     void Perish()
     {
         if (isEaten) return;
 
-        // TODO: PLAY SOUND
-
+        perishSound.Play();
         isEaten = true;
         spriteRenderer.enabled = false;
         eatenFx.Play();
@@ -109,7 +119,7 @@ public class Food : MonoBehaviour
 
     IEnumerator ExplosionFlash()
     {
-        intensify.Kill();
+        if (intensify != null) intensify.Kill();
         intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, explosionIntensity, 0.1f);
         yield return intensify.WaitForCompletion();
         intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, 0f, explosionTime);

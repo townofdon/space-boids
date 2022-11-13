@@ -8,5 +8,5 @@ public class FoodLauncherState
     }
 
     public Food.FoodType type;
-    public bool isAcquired = true;
+    public bool isAcquired = false;
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{790dc0ae-adad-4f33-89b9-b599594a4eeb}">
+		<property name="assetPath">
+			<value>charge-up-01.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.0012244897959184</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4bc703f9-1a76-4319-b5ae-07129eb34da9}</destination>
+		</relationship>
+	</object>
+</objects>

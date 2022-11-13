@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FMODUnity;
+using DG.Tweening;
 
 
 // NOTE - I combined all of the player functionality into a single script for sheer convenience.
@@ -30,10 +32,34 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject yellowFood;
     [SerializeField] GameObject redFood;
 
+    [Space]
+    [Space]
+
+    [SerializeField] float timeDelayTutorial = 2f;
+    [SerializeField] float timeShowMovementInstructions = 1.5f;
+    [SerializeField] float timeShowSettingsInstructions = 2f;
+    [SerializeField] float timeShowWeaponsInstructions = 3f;
+    [SerializeField] float timeBetweenInstructions = 1f;
+    [SerializeField] float instructionFadeTime = 0.5f;
+    [SerializeField] GameObject tutorialCanvas;
+    [SerializeField] CanvasGroup movementInstructions;
+    [SerializeField] CanvasGroup settingsInstructions;
+    [SerializeField] CanvasGroup weaponsInstructions;
+
+    [Space]
+    [Space]
+
+    [SerializeField] StudioEventEmitter shotSound;
+    [SerializeField] StudioEventEmitter switchSound;
+
     ParticleSystem.MainModule leftFXModule;
     ParticleSystem.MainModule rightFXModule;
     ParticleSystem.EmissionModule leftEmission;
     ParticleSystem.EmissionModule rightEmission;
+
+    const int BLUE = 0;
+    const int YELLOW = 1;
+    const int RED = 2;
 
     Rigidbody2D rb;
     SettingsMenu settings;
@@ -43,6 +69,7 @@ public class Player : MonoBehaviour
     Quaternion desiredRotation;
 
     float timeElapsedSinceLastShot = float.MaxValue;
+    bool hasReceivedWeaponsInstructions = false;
 
     FoodLauncherState[] launchers = new FoodLauncherState[3];
     int currentLauncherIndex = (int)Food.FoodType.Pod;
@@ -93,13 +120,16 @@ public class Player : MonoBehaviour
         switch (eventType)
         {
             case GlobalEvent.type.ACQUIRE_BLUE_POWER_TANK:
-                AcquireLauncher(Food.FoodType.Pod);
+                AcquireLauncher(BLUE);
                 break;
             case GlobalEvent.type.ACQUIRE_YELLOW_POWER_TANK:
-                AcquireLauncher(Food.FoodType.Freighter);
+                AcquireLauncher(YELLOW);
                 break;
             case GlobalEvent.type.ACQUIRE_RED_POWER_TANK:
-                AcquireLauncher(Food.FoodType.Xenon);
+                AcquireLauncher(RED);
+                break;
+            case GlobalEvent.type.SIMULATION_START:
+                StartCoroutine(InitialTutorial());
                 break;
         }
     }
@@ -112,9 +142,9 @@ public class Player : MonoBehaviour
         rightEmission = rightTrail.emission;
         leftEmission.rateOverTime = 0f;
         rightEmission.rateOverTime = 0f;
-        launchers[(int)Food.FoodType.Pod] = new FoodLauncherState(Food.FoodType.Pod);
-        launchers[(int)Food.FoodType.Xenon] = new FoodLauncherState(Food.FoodType.Xenon);
-        launchers[(int)Food.FoodType.Freighter] = new FoodLauncherState(Food.FoodType.Freighter);
+        launchers[BLUE] = new FoodLauncherState(Food.FoodType.Pod);
+        launchers[YELLOW] = new FoodLauncherState(Food.FoodType.Freighter);
+        launchers[RED] = new FoodLauncherState(Food.FoodType.Xenon);
     }
 
     void Start()
@@ -122,6 +152,7 @@ public class Player : MonoBehaviour
         desiredRotation = transform.rotation;
         StartCoroutine(UpdateScreenStats());
         GlobalEvent.Invoke(GlobalEvent.type.SELECT_BLUE_POWER_TANK);
+        tutorialCanvas.transform.SetParent(null);
     }
 
     void Update()
@@ -130,6 +161,7 @@ public class Player : MonoBehaviour
         Rotate();
         ManageTrails();
         timeElapsedSinceLastShot += Time.deltaTime * Simulation.speed;
+        tutorialCanvas.transform.position = transform.position;
     }
 
     void Move()
@@ -154,10 +186,15 @@ public class Player : MonoBehaviour
         rightEmission.rateOverTime = exhaust;
     }
 
-    void AcquireLauncher(Food.FoodType foodType)
+    void AcquireLauncher(int index)
     {
-        currentLauncherIndex = (int)foodType;
+        currentLauncherIndex = index;
         launchers[currentLauncherIndex].isAcquired = true;
+        if (!hasReceivedWeaponsInstructions)
+        {
+            hasReceivedWeaponsInstructions = true;
+            StartCoroutine(WeaponsTutorial());
+        }
     }
 
     void TryToSwitchWeapon()
@@ -165,18 +202,17 @@ public class Player : MonoBehaviour
         int nextIndex = GetNextWeaponIndex();
         if (nextIndex == currentLauncherIndex) return;
 
-        // TODO: PLAY SOUND
-
+        switchSound.Play();
         currentLauncherIndex = nextIndex;
-        switch (launchers[currentLauncherIndex].type)
+        switch (currentLauncherIndex)
         {
-            case Food.FoodType.Pod:
+            case BLUE:
                 GlobalEvent.Invoke(GlobalEvent.type.SELECT_BLUE_POWER_TANK);
                 break;
-            case Food.FoodType.Xenon:
+            case YELLOW:
                 GlobalEvent.Invoke(GlobalEvent.type.SELECT_YELLOW_POWER_TANK);
                 break;
-            case Food.FoodType.Freighter:
+            case RED:
                 GlobalEvent.Invoke(GlobalEvent.type.SELECT_RED_POWER_TANK);
                 break;
         }
@@ -186,11 +222,10 @@ public class Player : MonoBehaviour
     {
         if (timeElapsedSinceLastShot < timeBetweenShots) return;
         if (!launchers[currentLauncherIndex].isAcquired) return;
-        GameObject foodPrefab = GetFoodPrefab(launchers[currentLauncherIndex].type);
+        GameObject foodPrefab = GetFoodPrefab(currentLauncherIndex);
         if (foodPrefab == null) return;
 
-        // TODO: PLAY SOUND
-
+        shotSound.Play();
         timeElapsedSinceLastShot = 0f;
         GameObject food = Instantiate(foodPrefab, transform.position, Quaternion.identity);
         Rigidbody2D foodPhysics = food.GetComponent<Rigidbody2D>();
@@ -210,15 +245,15 @@ public class Player : MonoBehaviour
         return nextIndex;
     }
 
-    GameObject GetFoodPrefab(Food.FoodType foodType)
+    GameObject GetFoodPrefab(int index)
     {
-        switch (foodType)
+        switch (index)
         {
-            case Food.FoodType.Pod:
+            case BLUE:
                 return blueFood;
-            case Food.FoodType.Xenon:
+            case YELLOW:
                 return yellowFood;
-            case Food.FoodType.Freighter:
+            case RED:
                 return redFood;
         }
         return null;
@@ -231,5 +266,31 @@ public class Player : MonoBehaviour
             Utils.InvalidateScreenStats();
             yield return new WaitForSeconds(1f);
         }
+    }
+
+    IEnumerator InitialTutorial()
+    {
+        Tween tutorial;
+        yield return new WaitForSeconds(timeDelayTutorial);
+        tutorial = movementInstructions.DOFade(1f, instructionFadeTime);
+        yield return tutorial.WaitForCompletion();
+        yield return new WaitForSeconds(timeShowMovementInstructions);
+        tutorial = movementInstructions.DOFade(0f, instructionFadeTime);
+        yield return tutorial.WaitForCompletion();
+        yield return new WaitForSeconds(timeBetweenInstructions);
+        tutorial = settingsInstructions.DOFade(1f, instructionFadeTime);
+        yield return tutorial.WaitForCompletion();
+        yield return new WaitForSeconds(timeShowSettingsInstructions);
+        tutorial = settingsInstructions.DOFade(0f, instructionFadeTime);
+    }
+
+    IEnumerator WeaponsTutorial()
+    {
+        Tween tutorial;
+        tutorial = weaponsInstructions.DOFade(1f, instructionFadeTime);
+        yield return tutorial.WaitForCompletion();
+        yield return new WaitForSeconds(timeShowWeaponsInstructions);
+        tutorial = weaponsInstructions.DOFade(0f, instructionFadeTime);
+        yield return tutorial.WaitForCompletion();
     }
 }

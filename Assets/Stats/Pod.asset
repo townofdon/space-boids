@@ -15,6 +15,7 @@ MonoBehaviour:
   moveSpeed: 10
   rotationSpeed: 360
   awarenessLatency: 0.2
+  awarenessVariance: 0.1
   reflectOffScreenEdges: 0
   sightDistance: 7
   steeringVariance: 0.2
@@ -25,6 +26,7 @@ MonoBehaviour:
   followTheLeader: 0
   avoidance: 1
   runFromPredators: 1
+  seekFood: 0.661
   closenessMod:
     serializedVersion: 2
     m_Curve:

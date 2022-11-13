@@ -12,6 +12,8 @@ public static class GlobalEvent
         SELECT_BLUE_POWER_TANK,
         SELECT_YELLOW_POWER_TANK,
         SELECT_RED_POWER_TANK,
+        OPEN_MENU,
+        CLOSE_MENU,
     }
 
     static Action<type> OnGlobalEvent;
