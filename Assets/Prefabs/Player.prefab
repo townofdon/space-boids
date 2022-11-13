@@ -332,7 +332,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 11
-  rotationSpeed: 360
   cardinality: 45
   leftTrail: {fileID: 2679691765071759814}
   rightTrail: {fileID: 1388721943773298239}
@@ -361,6 +360,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  foodLaunchSpeed: 10
+  timeBetweenShots: 0.2
+  blueFood: {fileID: 1814704805074213980, guid: 497f78297c4424b588803e1e3b9e0ace, type: 3}
+  yellowFood: {fileID: 6077908433455196099, guid: c5ca273ab4fcb4eef8b15dcd12bcbbe6, type: 3}
+  redFood: {fileID: 3461970099717332276, guid: 16bed50233d394b42b0d7d40533b2a5b, type: 3}
 --- !u!114 &2951119439231883911
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,6 +6,12 @@ public static class GlobalEvent
     public enum type
     {
         SIMULATION_START,
+        ACQUIRE_BLUE_POWER_TANK,
+        ACQUIRE_YELLOW_POWER_TANK,
+        ACQUIRE_RED_POWER_TANK,
+        SELECT_BLUE_POWER_TANK,
+        SELECT_YELLOW_POWER_TANK,
+        SELECT_RED_POWER_TANK,
     }
 
     static Action<type> OnGlobalEvent;
