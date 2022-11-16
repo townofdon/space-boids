@@ -8,7 +8,7 @@ public class PowerTank : MonoBehaviour
     [SerializeField] Food.FoodType foodType;
     [SerializeField] ParticleSystem acquireFX;
     [SerializeField] ParticleSystemForceField particleAttractor;
-    [SerializeField] new Light2D light;
+    [SerializeField] Light2D light;
 
     [Space]
     [Space]
@@ -39,8 +39,6 @@ public class PowerTank : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log(other.tag);
-
         if (isAcquired) return;
         if (!other.CompareTag("Player")) return;
 

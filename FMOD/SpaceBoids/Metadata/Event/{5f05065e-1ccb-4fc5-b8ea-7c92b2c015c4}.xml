@@ -56,12 +56,15 @@
 			<destination>{8776d760-811a-4ba0-8ea0-26a9cfa2dc55}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{4797ca89-b6c6-4b16-ba61-f522c1a2123e}</destination>
+			<destination>{d51f49da-9a6b-449f-8495-1d182e893438}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{b691a769-9bd9-4547-ad31-c0ddb02d6575}">
 		<property name="maxVoices">
-			<value>30</value>
+			<value>20</value>
+		</property>
+		<property name="voiceStealing">
+			<value>1</value>
 		</property>
 		<property name="minimumDistance">
 			<value>4</value>
@@ -178,6 +181,7 @@
 		<relationship name="effects">
 			<destination>{ef26b533-2515-4cbb-97a1-85484f49eea6}</destination>
 			<destination>{edd423c8-7519-47b7-8bbd-1c0a5b81f0eb}</destination>
+			<destination>{1d489b39-71bc-48bc-beec-1da3f747a2d0}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{0105dffe-ad70-4e91-bad3-d18ad1315ea4}" />
@@ -285,6 +289,20 @@
 			<value>25</value>
 		</property>
 	</object>
+	<object class="PitchShifterEffect" id="{1d489b39-71bc-48bc-beec-1da3f747a2d0}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+		<property name="pitch">
+			<value>0.709999979</value>
+		</property>
+		<property name="fftSize">
+			<value>256</value>
+		</property>
+		<property name="overlap">
+			<value>1</value>
+		</property>
+	</object>
 	<object class="RandomizerModulator" id="{545f3d99-c6f2-486e-a46d-539796ca955b}">
 		<property name="nameOfPropertyBeingModulated">
 			<value>pitch</value>
@@ -292,6 +310,9 @@
 	</object>
 	<object class="MixerBusFader" id="{986779be-5f23-47ac-b38e-653d1d4c011d}" />
 	<object class="PitchShifterEffect" id="{db7e4463-b3fa-4426-a017-38f1f9253d4b}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="pitch">
 			<value>0.709999979</value>
 		</property>
@@ -303,6 +324,9 @@
 		</property>
 	</object>
 	<object class="DelayEffect" id="{7c85e1e0-22fe-480c-afa6-89a836db208c}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="delay">
 			<value>34</value>
 		</property>

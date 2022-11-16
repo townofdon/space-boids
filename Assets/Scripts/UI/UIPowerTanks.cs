@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class UIPowerTanks : MonoBehaviour
 {
+    [SerializeField] GameObject tabKey;
     [SerializeField] UIPowerTank blueTank;
     [SerializeField] UIPowerTank yellowTank;
     [SerializeField] UIPowerTank redTank;
+
+    int numTanksAcquired = 0;
 
     void OnEnable()
     {
@@ -16,18 +19,26 @@ public class UIPowerTanks : MonoBehaviour
         GlobalEvent.Unsubscribe(OnGlobalEvent);
     }
 
+    void Awake()
+    {
+        tabKey.SetActive(false);
+    }
+
     void OnGlobalEvent(GlobalEvent.type eventType)
     {
         switch (eventType)
         {
             case GlobalEvent.type.ACQUIRE_BLUE_POWER_TANK:
                 blueTank.FlagAcquired();
+                MaybeShowTabKey();
                 break;
             case GlobalEvent.type.ACQUIRE_YELLOW_POWER_TANK:
                 yellowTank.FlagAcquired();
+                MaybeShowTabKey();
                 break;
             case GlobalEvent.type.ACQUIRE_RED_POWER_TANK:
                 redTank.FlagAcquired();
+                MaybeShowTabKey();
                 break;
             case GlobalEvent.type.SELECT_BLUE_POWER_TANK:
                 blueTank.SetActive(true);
@@ -45,5 +56,11 @@ public class UIPowerTanks : MonoBehaviour
                 redTank.SetActive(true);
                 break;
         }
+    }
+
+    void MaybeShowTabKey()
+    {
+        numTanksAcquired++;
+        if (numTanksAcquired >= 2) tabKey.SetActive(true);
     }
 }

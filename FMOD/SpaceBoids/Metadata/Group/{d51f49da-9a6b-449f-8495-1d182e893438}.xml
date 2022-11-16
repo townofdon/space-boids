@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="MixerGroup" id="{d51f49da-9a6b-449f-8495-1d182e893438}">
+		<property name="name">
+			<value>PodDSP</value>
+		</property>
+		<relationship name="effectChain">
+			<destination>{adf31ca9-6a7a-4982-b000-b3ef61651878}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{14f1f59f-c327-4bee-a87e-0cdb45d0b72f}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{4797ca89-b6c6-4b16-ba61-f522c1a2123e}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{adf31ca9-6a7a-4982-b000-b3ef61651878}">
+		<relationship name="effects">
+			<destination>{28958bcc-f7bf-484f-9d80-30dfa6499f3e}</destination>
+			<destination>{5ca191c7-4ad3-4827-be6e-f6ddf3c1820c}</destination>
+			<destination>{a6333a7b-2288-41b4-aea3-6f80c6314cb6}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{14f1f59f-c327-4bee-a87e-0cdb45d0b72f}" />
+	<object class="MixerBusFader" id="{28958bcc-f7bf-484f-9d80-30dfa6499f3e}" />
+	<object class="PitchShifterEffect" id="{5ca191c7-4ad3-4827-be6e-f6ddf3c1820c}">
+		<property name="pitch">
+			<value>0.709999979</value>
+		</property>
+		<property name="fftSize">
+			<value>256</value>
+		</property>
+		<property name="overlap">
+			<value>1</value>
+		</property>
+	</object>
+	<object class="SFXReverbEffect" id="{a6333a7b-2288-41b4-aea3-6f80c6314cb6}">
+		<property name="decayTime">
+			<value>3900</value>
+		</property>
+		<property name="lateDelay">
+			<value>29</value>
+		</property>
+		<property name="HFDecayRatio">
+			<value>70</value>
+		</property>
+		<property name="highCut">
+			<value>680</value>
+		</property>
+		<property name="earlyLateMix">
+			<value>80</value>
+		</property>
+		<property name="wetLevel">
+			<value>-9.80000019</value>
+		</property>
+	</object>
+</objects>

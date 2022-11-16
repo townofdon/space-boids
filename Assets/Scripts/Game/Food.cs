@@ -29,7 +29,7 @@ public class Food : MonoBehaviour
     [SerializeField] float timeBetweenChomps = 0.2f;
     [SerializeField] ParticleSystem eatenFx;
     [SerializeField] ParticleSystem chompedFX;
-    [SerializeField] new Light2D light;
+    [SerializeField] Light2D light;
 
     [Space]
     [Space]

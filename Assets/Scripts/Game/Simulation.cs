@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -67,21 +66,21 @@ public static class Simulation
         foods.Remove(current);
     }
 
-    [UnityEditor.Callbacks.DidReloadScripts]
-    static void OnScriptsReloaded()
-    {
-        boids.Clear();
-        obstacles.Clear();
-        predators.Clear();
-        // foreach (var boid in Object.FindObjectsOfType<Boid>())
-        // {
-        //     boids.Add(boid);
-        // }
-        // foreach (var obstacle in Object.FindObjectsOfType<Obstacle>())
-        // {
-        //     obstacles.Add(obstacle);
-        // }
-    }
+    // [UnityEditor.Callbacks.DidReloadScripts]
+    // static void OnScriptsReloaded()
+    // {
+    //     boids.Clear();
+    //     obstacles.Clear();
+    //     predators.Clear();
+    //     // foreach (var boid in Object.FindObjectsOfType<Boid>())
+    //     // {
+    //     //     boids.Add(boid);
+    //     // }
+    //     // foreach (var obstacle in Object.FindObjectsOfType<Obstacle>())
+    //     // {
+    //     //     obstacles.Add(obstacle);
+    //     // }
+    // }
 
     // public static void Init()
     // {

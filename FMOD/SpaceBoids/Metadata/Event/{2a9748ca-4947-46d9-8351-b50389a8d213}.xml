@@ -53,12 +53,15 @@
 			<destination>{20b42599-a655-4f30-b119-329a39cbc8a1}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{4797ca89-b6c6-4b16-ba61-f522c1a2123e}</destination>
+			<destination>{1b753ff7-66f4-424e-bd03-837ae1c6461e}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{0e15c28e-7706-407d-b298-bb577354cb78}">
 		<property name="maxVoices">
-			<value>30</value>
+			<value>25</value>
+		</property>
+		<property name="voiceStealing">
+			<value>1</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{6d5565d7-5845-417c-9f13-e7ab1be65b2b}" />
@@ -224,13 +227,27 @@
 	<object class="MixerBusFader" id="{37e0bdbd-a852-40d3-abeb-85e7997097bf}" />
 	<object class="SpatialiserEffect" id="{78670eb2-0592-4cb3-bd5a-b54eb7126012}" />
 	<object class="FlangerEffect" id="{4c99c1be-5b1c-424c-ab39-cb7ecad16145}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="rate">
 			<value>0.399999976</value>
 		</property>
 	</object>
-	<object class="ChorusEffect" id="{a5116d6f-0d7c-4a6e-bb92-0034c463fff4}" />
-	<object class="PitchShifterEffect" id="{784c9c60-7608-4605-ae19-1754b7cb8b77}" />
+	<object class="ChorusEffect" id="{a5116d6f-0d7c-4a6e-bb92-0034c463fff4}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+	</object>
+	<object class="PitchShifterEffect" id="{784c9c60-7608-4605-ae19-1754b7cb8b77}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+	</object>
 	<object class="DelayEffect" id="{0574b97d-7007-4cf7-9bea-b75e77ae0439}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="delay">
 			<value>64</value>
 		</property>

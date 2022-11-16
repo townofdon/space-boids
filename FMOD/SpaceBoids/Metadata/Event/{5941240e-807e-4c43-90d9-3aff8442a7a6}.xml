@@ -64,12 +64,15 @@
 			<destination>{e8399dec-8afa-4a64-9418-0bbc5f76a0e0}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{4797ca89-b6c6-4b16-ba61-f522c1a2123e}</destination>
+			<destination>{aee973a3-c5fb-4a76-99b2-2150694ef1fe}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{7ef8dd93-2401-460d-8654-90860a9a9884}">
 		<property name="maxVoices">
 			<value>21</value>
+		</property>
+		<property name="voiceStealing">
+			<value>1</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{e7b94487-a63a-4792-911d-044fcf79085e}" />
@@ -868,6 +871,9 @@
 	<object class="SpatialiserEffect" id="{7b66015d-73d5-47e5-a4b0-2c76c797d907}" />
 	<object class="MixerBusFader" id="{e382d769-57da-48fe-b4f6-87b6c2ea29eb}" />
 	<object class="SFXReverbEffect" id="{01f3c886-ea9c-4765-abac-a1b26e04d2b1}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="decayTime">
 			<value>170</value>
 		</property>
@@ -891,6 +897,9 @@
 		</property>
 	</object>
 	<object class="ChorusEffect" id="{31d0d321-3006-4a61-924e-27edae4e5b71}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="rate">
 			<value>12</value>
 		</property>
@@ -899,6 +908,9 @@
 		</property>
 	</object>
 	<object class="FlangerEffect" id="{d8edab4f-9f4d-40ef-9337-3258c5982d25}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="rate">
 			<value>0.439999998</value>
 		</property>
@@ -906,8 +918,15 @@
 			<value>0.104999997</value>
 		</property>
 	</object>
-	<object class="PitchShifterEffect" id="{87bb63d4-bc98-43a7-8ebb-a11c9cd147cd}" />
+	<object class="PitchShifterEffect" id="{87bb63d4-bc98-43a7-8ebb-a11c9cd147cd}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+	</object>
 	<object class="MultibandEqEffect" id="{f9047e6f-eafc-40a7-a4f9-d3ccf7be994c}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="filterTypeA">
 			<value>4</value>
 		</property>
@@ -957,6 +976,9 @@
 		</relationship>
 	</object>
 	<object class="DelayEffect" id="{69313e7e-5544-4955-b58d-e55970525507}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="delay">
 			<value>620</value>
 		</property>

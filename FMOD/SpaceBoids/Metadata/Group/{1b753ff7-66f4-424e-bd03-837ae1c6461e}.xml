@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="MixerGroup" id="{1b753ff7-66f4-424e-bd03-837ae1c6461e}">
+		<property name="name">
+			<value>XenonDSP</value>
+		</property>
+		<relationship name="effectChain">
+			<destination>{28f119d3-3983-49ed-b65c-1734fefb1086}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{186b4b10-1a70-4899-b77e-a1de96ee369d}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{4797ca89-b6c6-4b16-ba61-f522c1a2123e}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{28f119d3-3983-49ed-b65c-1734fefb1086}">
+		<relationship name="effects">
+			<destination>{19a9b817-3207-40c9-9dd4-063fe6365a71}</destination>
+			<destination>{bf06380d-00f6-4bae-9da1-ac2f029744a1}</destination>
+			<destination>{cd9c619b-3b47-4d52-a2da-cae8e6596ba3}</destination>
+			<destination>{cba524e9-f833-4bfb-9624-82b423b8cdce}</destination>
+			<destination>{50942cde-70c3-40ac-8ee3-bf332174fa8c}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{186b4b10-1a70-4899-b77e-a1de96ee369d}" />
+	<object class="MixerBusFader" id="{19a9b817-3207-40c9-9dd4-063fe6365a71}" />
+	<object class="FlangerEffect" id="{bf06380d-00f6-4bae-9da1-ac2f029744a1}">
+		<property name="rate">
+			<value>0.399999976</value>
+		</property>
+	</object>
+	<object class="ChorusEffect" id="{cd9c619b-3b47-4d52-a2da-cae8e6596ba3}" />
+	<object class="PitchShifterEffect" id="{cba524e9-f833-4bfb-9624-82b423b8cdce}" />
+	<object class="DelayEffect" id="{50942cde-70c3-40ac-8ee3-bf332174fa8c}">
+		<property name="delay">
+			<value>64</value>
+		</property>
+		<property name="feedback">
+			<value>24.5</value>
+		</property>
+	</object>
+</objects>

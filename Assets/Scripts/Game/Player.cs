@@ -51,6 +51,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] StudioEventEmitter shotSound;
     [SerializeField] StudioEventEmitter switchSound;
+    [SerializeField] StudioEventEmitter errorSound;
 
     ParticleSystem.MainModule leftFXModule;
     ParticleSystem.MainModule rightFXModule;
