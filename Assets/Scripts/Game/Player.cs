@@ -64,6 +64,10 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rb;
     SettingsMenu settings;
+    PlayerInput input;
+    InputActionMap inputActionMap;
+
+    bool isInputDisabled;
 
     Vector2 move;
     Vector2 look;
@@ -75,20 +79,29 @@ public class Player : MonoBehaviour
     FoodLauncherState[] launchers = new FoodLauncherState[3];
     int currentLauncherIndex = (int)Food.FoodType.Pod;
 
+    void ResetInput()
+    {
+        move = Vector2.zero;
+        look = Vector2.zero;
+    }
+
     // PlayerInput message
     void OnMove(InputValue value)
     {
+        if (isInputDisabled) return;
         move = value.Get<Vector2>();
     }
 
     // PlayerInput message
     void OnLook(InputValue value)
     {
+        if (isInputDisabled) return;
         look = value.Get<Vector2>();
     }
 
     void OnSwitchWeapon(InputValue value)
     {
+        if (isInputDisabled) return;
         if (!value.isPressed) return;
         TryToSwitchWeapon();
     }
@@ -96,6 +109,7 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnFire(InputValue value)
     {
+        if (isInputDisabled) return;
         if (!value.isPressed) return;
         TryToFire();
     }
@@ -103,6 +117,7 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnSettings(InputValue value)
     {
+        if (!value.isPressed) return;
         settings.ToggleMenu();
     }
 
@@ -130,7 +145,16 @@ public class Player : MonoBehaviour
                 AcquireLauncher(RED);
                 break;
             case GlobalEvent.type.SIMULATION_START:
+                input.ActivateInput();
                 StartCoroutine(InitialTutorial());
+                break;
+            case GlobalEvent.type.OPEN_MENU:
+                isInputDisabled = true;
+                ResetInput();
+                break;
+            case GlobalEvent.type.CLOSE_MENU:
+                isInputDisabled = false;
+                ResetInput();
                 break;
         }
     }
@@ -138,6 +162,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        input = GetComponent<PlayerInput>();
         settings = FindObjectOfType<SettingsMenu>();
         leftEmission = leftTrail.emission;
         rightEmission = rightTrail.emission;
@@ -154,6 +179,7 @@ public class Player : MonoBehaviour
         StartCoroutine(UpdateScreenStats());
         GlobalEvent.Invoke(GlobalEvent.type.SELECT_BLUE_POWER_TANK);
         tutorialCanvas.transform.SetParent(null);
+        input.DeactivateInput();
     }
 
     void Update()

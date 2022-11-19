@@ -13,4 +13,16 @@ public static class Extensions
         temp.a = Mathf.Clamp01(alpha);
         return temp;
     }
+
+    public static void SetActiveAndEnable(this MonoBehaviour component, bool isActive)
+    {
+        component.enabled = isActive;
+        component.gameObject.SetActive(isActive);
+    }
+
+    public static void SetActiveAndEnable(this Renderer renderer, bool isActive)
+    {
+        renderer.enabled = isActive;
+        renderer.gameObject.SetActive(isActive);
+    }
 }

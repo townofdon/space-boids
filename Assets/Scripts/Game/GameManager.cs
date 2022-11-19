@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] bool useJobs;
 
     public GameState state;
+
+    public bool UseJobs { get => useJobs; }
 
     public void SetCohesion(float val)
     {
@@ -43,6 +46,11 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         state = new GameState();
+
+#if (!UNITY_EDITOR && UNITY_WEBGL)
+        useJobs = false;
+#endif
+
     }
 
     void Start()

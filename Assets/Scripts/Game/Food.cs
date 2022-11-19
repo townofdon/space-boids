@@ -30,6 +30,7 @@ public class Food : MonoBehaviour
     [SerializeField] ParticleSystem eatenFx;
     [SerializeField] ParticleSystem chompedFX;
     [SerializeField] Light2D light;
+    [SerializeField] SpriteRenderer lightWebGL;
 
     [Space]
     [Space]
@@ -38,14 +39,17 @@ public class Food : MonoBehaviour
     [SerializeField] StudioEventEmitter perishSound;
 
     SpriteRenderer spriteRenderer;
+    GameManager gameManager;
 
     public bool isEaten = false;
     float initialLightIntensity = 1f;
+    float initialLightTransparency = 1f;
     Boid currentBoid;
 
     float timeSinceLastAnimationEvent = 0f;
     float timeSinceLastChomped = float.MaxValue;
     Tween intensify;
+    Tween transparencify;
 
     float t;
 
@@ -54,7 +58,9 @@ public class Food : MonoBehaviour
     {
         if (isEaten) return;
         if (intensify != null) intensify.Kill();
-        intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, value, timeSinceLastAnimationEvent).SetEase(Ease.Linear);
+        // intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, value * initialLightIntensity, timeSinceLastAnimationEvent).SetEase(Ease.Linear);
+        light.intensity = value * initialLightIntensity;
+        lightWebGL.color = lightWebGL.color.toAlpha(value * initialLightTransparency);
         timeSinceLastAnimationEvent = 0f;
     }
 
@@ -90,11 +96,23 @@ public class Food : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.enabled = true;
+        gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
     }
 
     void Start()
     {
         initialLightIntensity = light.intensity;
+        initialLightTransparency = lightWebGL.color.a;
+        if (gameManager.UseJobs)
+        {
+            light.SetActiveAndEnable(true);
+            lightWebGL.SetActiveAndEnable(false);
+        }
+        else
+        {
+            light.SetActiveAndEnable(false);
+            lightWebGL.SetActiveAndEnable(true);
+        }
     }
 
     void Update()
@@ -121,8 +139,12 @@ public class Food : MonoBehaviour
     {
         if (intensify != null) intensify.Kill();
         intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, explosionIntensity, 0.1f);
+        transparencify = DOTween.To(() => lightWebGL.color.a, (x) => lightWebGL.color = lightWebGL.color.toAlpha(x), Mathf.Clamp01(explosionIntensity), 0.1f);
         yield return intensify.WaitForCompletion();
+        yield return transparencify.WaitForCompletion();
         intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, 0f, explosionTime);
+        transparencify = DOTween.To(() => lightWebGL.color.a, (x) => lightWebGL.color = lightWebGL.color.toAlpha(x), 0f, 0.1f);
         yield return intensify.WaitForCompletion();
+        yield return transparencify.WaitForCompletion();
     }
 }

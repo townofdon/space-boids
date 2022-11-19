@@ -8,6 +8,7 @@ public class SettingsMenu : MonoBehaviour
 {
     [SerializeField] float animationTime = 1f;
     [SerializeField] RectTransform rect;
+    [SerializeField] Button openButton;
 
     [Space]
     [Space]
@@ -39,6 +40,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void OpenMenu()
     {
+        if (isMenuOpen) return;
         isMenuOpen = true;
         openSound.Play();
         PrepareMenuMovement();
@@ -47,6 +49,7 @@ public class SettingsMenu : MonoBehaviour
         timeTween = DOTween.To(() => Simulation.speed, (x) => Simulation.SetSimulationSpeed(x), .1f, animationTime);
         timeTween.OnComplete(() =>
         {
+            openButton.interactable = false;
             foreach (var slider in sliders) slider.interactable = true;
             sliders[0].Select();
         });
@@ -55,7 +58,9 @@ public class SettingsMenu : MonoBehaviour
 
     public void CloseMenu()
     {
+        if (!isMenuOpen) return;
         isMenuOpen = false;
+        openButton.interactable = true;
         closeSound.Play();
         PrepareMenuMovement();
         foreach (var slider in sliders) slider.interactable = false;
@@ -75,6 +80,7 @@ public class SettingsMenu : MonoBehaviour
     {
         origMinAnchors = rect.anchorMin;
         origMaxAnchors = rect.anchorMax;
+        openButton.interactable = true;
     }
 
     void PrepareMenuMovement()

@@ -11,6 +11,11 @@ public static class Simulation
     public static List<Boid> _debug_boids => boids;
     public static List<Obstacle> _debug_obstacles => obstacles;
 
+    public static List<Boid> Boids { get => boids; }
+    public static List<Obstacle> Obstacles { get => obstacles; }
+    public static List<Predator> Predators { get => predators; }
+    public static List<Food> Foods { get => foods; }
+
     public static float speed = 1f;
 
     public static void SetSimulationSpeed(float val)

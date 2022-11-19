@@ -19,6 +19,7 @@
 			<destination>{28958bcc-f7bf-484f-9d80-30dfa6499f3e}</destination>
 			<destination>{5ca191c7-4ad3-4827-be6e-f6ddf3c1820c}</destination>
 			<destination>{a6333a7b-2288-41b4-aea3-6f80c6314cb6}</destination>
+			<destination>{7fc76323-7608-425f-bd60-6152646f6614}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{14f1f59f-c327-4bee-a87e-0cdb45d0b72f}" />
@@ -52,6 +53,55 @@
 		</property>
 		<property name="wetLevel">
 			<value>-9.80000019</value>
+		</property>
+	</object>
+	<object class="MultibandEqEffect" id="{7fc76323-7608-425f-bd60-6152646f6614}">
+		<property name="filterTypeA">
+			<value>4</value>
+		</property>
+		<property name="filterTypeB">
+			<value>9</value>
+		</property>
+		<property name="filterTypeE">
+			<value>8</value>
+		</property>
+		<property name="frequencyA">
+			<value>110</value>
+		</property>
+		<property name="frequencyB">
+			<value>1685.72205</value>
+		</property>
+		<property name="frequencyE">
+			<value>6348.49707</value>
+		</property>
+		<property name="qualityA">
+			<value>0.697135448</value>
+		</property>
+		<property name="gainB">
+			<value>3.47779155</value>
+		</property>
+		<property name="gainE">
+			<value>10.7583981</value>
+		</property>
+		<relationship name="modulators">
+			<destination>{3f4e4265-8ee6-49a0-bf64-6e2dd12c9465}</destination>
+			<destination>{71750498-00ce-4f59-a451-4a1f6e1bf8d9}</destination>
+		</relationship>
+	</object>
+	<object class="RandomizerModulator" id="{3f4e4265-8ee6-49a0-bf64-6e2dd12c9465}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>frequencyA</value>
+		</property>
+		<property name="amount">
+			<value>15</value>
+		</property>
+	</object>
+	<object class="RandomizerModulator" id="{71750498-00ce-4f59-a451-4a1f6e1bf8d9}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>frequencyB</value>
+		</property>
+		<property name="amount">
+			<value>20.5</value>
 		</property>
 	</object>
 </objects>

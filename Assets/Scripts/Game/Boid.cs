@@ -1,6 +1,21 @@
 using System.Collections;
 using UnityEngine;
 using FMODUnity;
+using Unity.Mathematics;
+using Unity.Jobs;
+using Unity.Collections;
+
+// NOTES FOR FUTURE DON
+// I think the solution here is to jobify the individual Boid scripts.
+// This way each boid can have distinct Neighbors {NativeArray<bool>}.
+// Each CheckFnc will simply ignore `Neighbors[other] == false`.
+// 
+// ACKSTCHUALLY, making BoidManager not fire off one huge single-threaded job
+// will also help tremendounsly. E.g. separate out coherence, separation, etc.
+// This will also allow us to find all the neighbors in a first pass and
+// insert them into a two-dimensional array.
+// Use a 1D array and index it as array[y * width + x]? That's all that the 2D array is doing for you under the hood anyway.
+
 
 public class Boid : MonoBehaviour
 {
@@ -66,8 +81,40 @@ public class Boid : MonoBehaviour
     Vector2 alignment;
     Vector2 followTheLeader;
     Vector2 makeWayForLeader;
-    Vector2 avoidance;
+    Vector2 avoidObstacles;
+    Vector2 avoidPredators;
     Vector2 seekFood;
+
+    public void SetCohesion(Vector2 value)
+    {
+        cohesion = value;
+    }
+    public void SetSeparation(Vector2 value)
+    {
+        separation = value;
+    }
+    public void SetAlignment(Vector2 value)
+    {
+        alignment = value;
+    }
+    public void SetFollowTheLeader(Vector2 value)
+    {
+        followTheLeader = value;
+    }
+    public void SetAvoidObstacles(Vector2 value)
+    {
+        avoidObstacles = value;
+    }
+    public void SetAvoidPredators(Vector2 value)
+    {
+        avoidPredators = value;
+    }
+    public void SetSeekFood(Vector2 value)
+    {
+        seekFood = value;
+    }
+
+    public float SightDistance => stats.sightDistance;
 
     float closeness;
     float maxCloseness;
@@ -159,6 +206,9 @@ public class Boid : MonoBehaviour
     public bool CanSee(Predator other) { return CanSee(other.transform); }
     public bool CanSee(Transform other)
     {
+        if (other == null) return false;
+        if (Mathf.Abs(other.position.x - position.x) > stats.sightDistance) return false;
+        if (Mathf.Abs(other.position.y - position.y) > stats.sightDistance) return false;
         return Vector2.Distance(transform.position, other.position) <= stats.sightDistance;
     }
 
@@ -196,35 +246,68 @@ public class Boid : MonoBehaviour
         StartCoroutine(LookForWalls());
     }
 
+    void Profile(System.Action action, string actionName)
+    {
+        float time = Time.realtimeSinceStartup;
+        action();
+        if (debug) Debug.Log(actionName.PadLeft(30, '_') + " >> " + ((Time.realtimeSinceStartup - time) * 1000f) + "ms");
+    }
+
     void Update()
     {
-        PerceiveEnvironment();
-        Cohesion();
-        Alignment();
-        SeekFood();
-        FollowTheLeader();
-        Separation();
-        Avoidance();
-        RunFromPredators();
-        desiredHeading = VaryHeading();
-        if (stats.reflectOffScreenEdges) desiredHeading = ReflectOffScreenEdges();
-        desiredHeading = AvoidWalls();
-        ChangeHeading();
-        Move();
-        CheckFoodChomp();
-        DebugSimulation();
+        if (gameManager.UseJobs)
+        {
+            desiredHeading += cohesion * CalcStat(stats.cohesion, gameManager.state.cohesion);
+            desiredHeading += alignment * CalcStat(stats.alignment, gameManager.state.alignment);
+            desiredHeading += seekFood * CalcStat(stats.seekFood, gameManager.state.seekFood);
+            desiredHeading += followTheLeader * stats.followTheLeader;
+            desiredHeading += separation * CalcStat(stats.separation, gameManager.state.separation);
+            desiredHeading += avoidObstacles * 2f;
+            desiredHeading += avoidPredators * CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) * 4f;
+            desiredHeading = VaryHeading();
+            desiredHeading = AvoidWalls();
+            ChangeHeading();
+            Move();
+        }
+        else
+        {
+            Awareness();
+            PerceiveEnvironment();
+            Cohesion();
+            Alignment();
+            SeekFood();
+            FollowTheLeader();
+            Separation();
+            Avoidance();
+            RunFromPredators();
+            desiredHeading = VaryHeading();
+            if (stats.reflectOffScreenEdges) desiredHeading = ReflectOffScreenEdges();
+            desiredHeading = AvoidWalls();
+            ChangeHeading();
+            Move();
+            CheckFoodChomp();
+            DebugSimulation();
+            PostAwareness();
+        }
+    }
+
+    void Awareness()
+    {
+        awarenessLatency = stats.awarenessLatency + UnityEngine.Random.Range(0f, stats.awarenessVariance);
+        if (timeSinceLastPerceived < awarenessLatency)
+        {
+            timeSinceLastPerceived += Time.deltaTime;
+        }
+    }
+
+    void PostAwareness()
+    {
+        if (timeSinceLastPerceived >= awarenessLatency) timeSinceLastPerceived = 0f;
     }
 
     void PerceiveEnvironment()
     {
-        rotationSpeed = stats.rotationSpeed;
-        if (timeSinceLastPerceived < awarenessLatency)
-        {
-            timeSinceLastPerceived += Time.deltaTime;
-            return;
-        }
-        awarenessLatency = stats.awarenessLatency + UnityEngine.Random.Range(0f, stats.awarenessVariance);
-        timeSinceLastPerceived = 0f;
+        if (timeSinceLastPerceived < awarenessLatency) return;
         neighborCount = Simulation.GetNeighbors(this, neighbors);
         leader = Simulation.GetLeader(this, neighbors, neighborCount);
         neighborCountQuotient = neighborCount == 0 ? 1f : 1f / neighborCount;
@@ -236,6 +319,7 @@ public class Boid : MonoBehaviour
 
     void Cohesion()
     {
+        if (timeSinceLastPerceived < awarenessLatency) return;
         cohesion = Vector2.zero;
         if (CalcStat(stats.cohesion, gameManager.state.cohesion) <= 0) return;
         if (neighborCount == 0) return;
@@ -253,6 +337,7 @@ public class Boid : MonoBehaviour
 
     void Separation()
     {
+        if (timeSinceLastPerceived < awarenessLatency) return;
         separation = Vector2.zero;
         closeness = 0f;
         if (CalcStat(stats.separation, gameManager.state.separation) <= 0) return;
@@ -270,6 +355,7 @@ public class Boid : MonoBehaviour
 
     void Alignment()
     {
+        if (timeSinceLastPerceived < awarenessLatency) return;
         alignment = Vector2.zero;
         if (CalcStat(stats.alignment, gameManager.state.alignment) <= 0) return;
         if (neighborCount == 0) return;
@@ -286,6 +372,7 @@ public class Boid : MonoBehaviour
 
     void FollowTheLeader()
     {
+        if (timeSinceLastPerceived < awarenessLatency) return;
         // I'm not convinced this is working as expected...
         followTheLeader = Vector2.zero;
         if (stats.followTheLeader <= 0) return;
@@ -298,7 +385,8 @@ public class Boid : MonoBehaviour
 
     void Avoidance()
     {
-        avoidance = Vector2.zero;
+        if (timeSinceLastPerceived < awarenessLatency) return;
+        avoidObstacles = Vector2.zero;
         closeness = 0f;
         maxCloseness = 0f;
         if (stats.avoidance <= 0) return;
@@ -313,14 +401,15 @@ public class Boid : MonoBehaviour
             closeness = Mathf.Pow(closeness, stats.avoidanceTension);
             if (closeness > maxCloseness) maxCloseness = closeness;
             closeness = closeness * stats.avoidanceStrength * obstaclesNearby[i].avoidanceMod;
-            avoidance += HeadingFrom(obstaclesNearby[i]) * closeness;
+            avoidObstacles += HeadingFrom(obstaclesNearby[i]) * closeness;
         }
         rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, maxCloseness);
-        desiredHeading += avoidance * 2f;
+        desiredHeading += avoidObstacles * 2f;
     }
 
     void SeekFood()
     {
+        if (timeSinceLastPerceived < awarenessLatency) return;
         seekFood = Vector2.zero;
         if (CalcStat(stats.seekFood, gameManager.state.seekFood) <= 0) return;
         if (foodsCount == 0) return;
@@ -331,7 +420,8 @@ public class Boid : MonoBehaviour
 
     void RunFromPredators()
     {
-        avoidance = Vector2.zero;
+        if (timeSinceLastPerceived < awarenessLatency) return;
+        avoidPredators = Vector2.zero;
         closeness = 0f;
         if (CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) <= 0) return;
         if (predatorsNearbyCount == 0) return;
@@ -340,14 +430,14 @@ public class Boid : MonoBehaviour
             closeness = stats.sightDistance - DistanceTo(predatorsNearby[i]);
             closeness = Mathf.Clamp01(closeness / stats.sightDistance);
             closeness = closeness * stats.predatorFleeMod.Evaluate(closeness) * predatorsNearby[i].scarinessMod;
-            avoidance += HeadingFrom(predatorsNearby[i]) * closeness;
+            avoidPredators += HeadingFrom(predatorsNearby[i]) * closeness;
         }
-        desiredHeading += avoidance * CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) * 4f;
+        desiredHeading += avoidPredators * CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) * 4f;
     }
 
     void ChangeHeading()
     {
-        desiredHeading = desiredHeading.normalized;
+        desiredHeading = float.IsNaN(desiredHeading.x) ? Vector2.down : desiredHeading.normalized;
         desiredRotation = Quaternion.Euler(0f, 0f, Vector2.SignedAngle(Vector2.up, desiredHeading));
         transform.rotation = Quaternion.RotateTowards(transform.rotation, desiredRotation, rotationSpeed * Simulation.speed * Time.deltaTime);
     }
@@ -361,7 +451,10 @@ public class Boid : MonoBehaviour
     void CheckFoodChomp()
     {
         if (closestFood == null) return;
-        if (Vector2.Distance(closestFood.transform.position, transform.position) <= .4f) closestFood.GetChomped();
+        float foodChompDistance = .4f;
+        if (Mathf.Abs(closestFood.transform.position.x - position.x) > foodChompDistance) return;
+        if (Mathf.Abs(closestFood.transform.position.y - position.y) > foodChompDistance) return;
+        if (Vector2.Distance(closestFood.transform.position, transform.position) <= foodChompDistance) closestFood.GetChomped();
     }
 
     float CalcStat(float stat, float globalStat)
@@ -479,7 +572,7 @@ public class Boid : MonoBehaviour
         DrawStat(alignment, Color.green.toAlpha(0.4f));
         DrawStat(cohesion, Color.cyan.toAlpha(0.3f));
         DrawStat(neighborCentroidHeading, Color.cyan.toAlpha(0.3f));
-        DrawStat(avoidance, Color.red.toAlpha(0.5f));
+        DrawStat(avoidObstacles, Color.red.toAlpha(0.5f));
 
         for (int i = 0; i < obstaclesNearbyCount; i++)
         {

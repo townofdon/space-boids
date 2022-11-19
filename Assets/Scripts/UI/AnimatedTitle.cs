@@ -80,13 +80,19 @@ public class AnimatedTitle : MonoBehaviour
     IEnumerator IAnimate()
     {
         yield return new WaitForSeconds(preFadeInTime);
-        Tween fading = DOTween.To(() => canvasGroup.alpha, (float x) => canvasGroup.alpha = x, 1f, fadeInTime);
-        Tween spacing = DOTween.To(() => title.characterSpacing, (float x) => title.characterSpacing = x, spacingEnd, spacingTime);
+        Tween fading, spacing, offsetting;
+        fading = DOTween.To(() => canvasGroup.alpha, (float x) => canvasGroup.alpha = x, 1f, fadeInTime);
+        spacing = DOTween.To(() => title.characterSpacing, (float x) => title.characterSpacing = x, spacingEnd, spacingTime);
         if (fading.active) yield return fading.WaitForCompletion();
         if (spacing.active) yield return spacing.WaitForCompletion();
         yield return new WaitForSeconds(holdTime);
-        DOTween.To(() => canvasGroup.alpha, (float x) => canvasGroup.alpha = x, 0f, fadeOutTime);
-        DOTween.To(() => offset, (float x) => offset = x, endTextOffset, textBlitTime * 2f);
-        DOTween.To(() => title.characterSpacing, (float x) => title.characterSpacing = x, spacingStart, textBlitTime);
+        fading = DOTween.To(() => canvasGroup.alpha, (float x) => canvasGroup.alpha = x, 0f, fadeOutTime);
+        offsetting = DOTween.To(() => offset, (float x) => offset = x, endTextOffset, textBlitTime * 2f);
+        spacing = DOTween.To(() => title.characterSpacing, (float x) => title.characterSpacing = x, spacingStart, textBlitTime);
+        if (fading.active) yield return fading.WaitForCompletion();
+        if (spacing.active) yield return spacing.WaitForCompletion();
+        if (offsetting.active) yield return offsetting.WaitForCompletion();
+
+        Destroy(gameObject);
     }
 }

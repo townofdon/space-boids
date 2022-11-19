@@ -61,7 +61,7 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{b691a769-9bd9-4547-ad31-c0ddb02d6575}">
 		<property name="maxVoices">
-			<value>20</value>
+			<value>50</value>
 		</property>
 		<property name="voiceStealing">
 			<value>1</value>
@@ -335,6 +335,9 @@
 		</relationship>
 	</object>
 	<object class="MultibandEqEffect" id="{f66f4062-8be6-4362-bd72-a53e0c6bf43c}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="filterTypeA">
 			<value>4</value>
 		</property>
