@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3356495311782705691, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_InstanceId
+      value: -11398
+      objectReference: {fileID: 0}
     - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: EventReference.Path
       value: event:/Boid/Pod
@@ -90,6 +94,6 @@ PrefabInstance:
     - target: {fileID: 8474355229200189830, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: b1e0fb12e5cd942e4839d63f0894f3ba, type: 3}
+      objectReference: {fileID: 21300000, guid: af6cfd8380bd34896a3b27d83985c303, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}

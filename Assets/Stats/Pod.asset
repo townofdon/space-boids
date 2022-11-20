@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   rotationSpeed: 360
-  awarenessLatency: 0.08
-  awarenessVariance: 0.04
+  awarenessLatency: 0.1
+  awarenessVariance: 0.05
   reflectOffScreenEdges: 0
   sightDistance: 7
   steeringVariance: 0.2

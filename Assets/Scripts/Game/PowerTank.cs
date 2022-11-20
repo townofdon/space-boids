@@ -9,6 +9,7 @@ public class PowerTank : MonoBehaviour
     [SerializeField] ParticleSystem acquireFX;
     [SerializeField] ParticleSystemForceField particleAttractor;
     [SerializeField] Light2D light;
+    [SerializeField] SpriteRenderer lightWebGL;
 
     [Space]
     [Space]
@@ -23,6 +24,7 @@ public class PowerTank : MonoBehaviour
     [SerializeField] StudioEventEmitter acquireSound;
 
     Vector2 initialPosition;
+    float initialLightTransparency;
     float t = 0f;
     bool isAcquired = false;
     Tween intensify;
@@ -33,7 +35,9 @@ public class PowerTank : MonoBehaviour
     {
         if (isAcquired) return;
         if (intensify != null) intensify.Kill();
-        intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, value, timeSinceLastAnimationEvent).SetEase(Ease.Linear);
+        // intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, value, timeSinceLastAnimationEvent).SetEase(Ease.Linear);
+        light.intensity = value;
+        lightWebGL.color = lightWebGL.color.toAlpha(value * initialLightTransparency);
         timeSinceLastAnimationEvent = 0f;
     }
 
@@ -63,6 +67,7 @@ public class PowerTank : MonoBehaviour
         GetComponent<SpriteRenderer>().enabled = false;
         if (intensify != null) intensify.Kill();
         light.enabled = false;
+        lightWebGL.enabled = false;
         acquireFX.Play();
         particleAttractor.transform.SetParent(other.transform);
         particleAttractor.transform.position = other.transform.position;
@@ -73,6 +78,7 @@ public class PowerTank : MonoBehaviour
     void Start()
     {
         initialPosition = transform.position;
+        initialLightTransparency = lightWebGL.color.a;
         GetComponent<Rigidbody2D>().isKinematic = true;
     }
 

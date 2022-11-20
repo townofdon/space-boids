@@ -19,6 +19,10 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.68
       objectReference: {fileID: 0}
+    - target: {fileID: 3356495311782705691, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
+      propertyPath: m_InstanceId
+      value: -16678
+      objectReference: {fileID: 0}
     - target: {fileID: 3508351270250232750, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: EventReference.Path
       value: event:/Boid/Freighter
@@ -114,6 +118,6 @@ PrefabInstance:
     - target: {fileID: 8474355229200189830, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dc09bcb68b869497cb0107d82605d277, type: 3}
+      objectReference: {fileID: 21300000, guid: e81c2c060ece349e39c67f3bf10dd3bf, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a9753ef0a51c44e1be2d42365d54a9f, type: 3}
