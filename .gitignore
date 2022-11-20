@@ -95,5 +95,8 @@ crashlytics-build.properties
 fmod_editor.log
 
 */**/.DS_Store
+.DS_Store
+
+DeployScripts/webgl
 
 .env
