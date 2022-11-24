@@ -69,7 +69,7 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{7ef8dd93-2401-460d-8654-90860a9a9884}">
 		<property name="maxVoices">
-			<value>14</value>
+			<value>10</value>
 		</property>
 		<property name="voiceStealing">
 			<value>1</value>
@@ -864,12 +864,7 @@
 	<object class="MixerBusEffectChain" id="{22261e58-dd3f-455e-82bd-78719882fb61}">
 		<relationship name="effects">
 			<destination>{e382d769-57da-48fe-b4f6-87b6c2ea29eb}</destination>
-			<destination>{01f3c886-ea9c-4765-abac-a1b26e04d2b1}</destination>
-			<destination>{31d0d321-3006-4a61-924e-27edae4e5b71}</destination>
-			<destination>{d8edab4f-9f4d-40ef-9337-3258c5982d25}</destination>
-			<destination>{87bb63d4-bc98-43a7-8ebb-a11c9cd147cd}</destination>
 			<destination>{f9047e6f-eafc-40a7-a4f9-d3ccf7be994c}</destination>
-			<destination>{69313e7e-5544-4955-b58d-e55970525507}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{941a58dd-0957-46f4-a7bb-4f648103624d}" />
@@ -883,59 +878,6 @@
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{e382d769-57da-48fe-b4f6-87b6c2ea29eb}" />
-	<object class="SFXReverbEffect" id="{01f3c886-ea9c-4765-abac-a1b26e04d2b1}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="decayTime">
-			<value>170</value>
-		</property>
-		<property name="earlyDelay">
-			<value>1</value>
-		</property>
-		<property name="lateDelay">
-			<value>2</value>
-		</property>
-		<property name="HFDecayRatio">
-			<value>10</value>
-		</property>
-		<property name="highCut">
-			<value>160</value>
-		</property>
-		<property name="earlyLateMix">
-			<value>84</value>
-		</property>
-		<property name="wetLevel">
-			<value>-7.80000019</value>
-		</property>
-	</object>
-	<object class="ChorusEffect" id="{31d0d321-3006-4a61-924e-27edae4e5b71}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="rate">
-			<value>12</value>
-		</property>
-		<property name="depth">
-			<value>6</value>
-		</property>
-	</object>
-	<object class="FlangerEffect" id="{d8edab4f-9f4d-40ef-9337-3258c5982d25}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="rate">
-			<value>0.439999998</value>
-		</property>
-		<property name="delay">
-			<value>0.104999997</value>
-		</property>
-	</object>
-	<object class="PitchShifterEffect" id="{87bb63d4-bc98-43a7-8ebb-a11c9cd147cd}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-	</object>
 	<object class="MultibandEqEffect" id="{f9047e6f-eafc-40a7-a4f9-d3ccf7be994c}">
 		<property name="filterTypeA">
 			<value>0</value>
@@ -982,17 +924,6 @@
 			<destination>{2f22fb18-b49b-48b3-87b2-7bc6a15569f6}</destination>
 		</relationship>
 	</object>
-	<object class="DelayEffect" id="{69313e7e-5544-4955-b58d-e55970525507}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="delay">
-			<value>620</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{43f80492-3292-4d4b-98ac-8c2b0218916e}</destination>
-		</relationship>
-	</object>
 	<object class="Automator" id="{b54fd7f5-8392-410c-99e4-fba18dba26e2}">
 		<property name="nameOfPropertyBeingAutomated">
 			<value>frequencyE</value>
@@ -1023,14 +954,6 @@
 		</property>
 		<property name="amount">
 			<value>17.5</value>
-		</property>
-	</object>
-	<object class="RandomizerModulator" id="{43f80492-3292-4d4b-98ac-8c2b0218916e}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>delay</value>
-		</property>
-		<property name="amount">
-			<value>11.5</value>
 		</property>
 	</object>
 	<object class="AutomationCurve" id="{b5818229-a646-4dbf-a36b-fa8235951beb}">

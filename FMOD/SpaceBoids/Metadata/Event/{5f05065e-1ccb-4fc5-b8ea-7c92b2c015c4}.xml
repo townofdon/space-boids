@@ -61,7 +61,7 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{b691a769-9bd9-4547-ad31-c0ddb02d6575}">
 		<property name="maxVoices">
-			<value>30</value>
+			<value>20</value>
 		</property>
 		<property name="voiceStealing">
 			<value>1</value>
@@ -181,7 +181,6 @@
 		<relationship name="effects">
 			<destination>{ef26b533-2515-4cbb-97a1-85484f49eea6}</destination>
 			<destination>{edd423c8-7519-47b7-8bbd-1c0a5b81f0eb}</destination>
-			<destination>{1d489b39-71bc-48bc-beec-1da3f747a2d0}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{0105dffe-ad70-4e91-bad3-d18ad1315ea4}" />
@@ -273,9 +272,6 @@
 	<object class="MixerBusEffectChain" id="{211957cd-d987-4543-8903-60ceaea11461}">
 		<relationship name="effects">
 			<destination>{986779be-5f23-47ac-b38e-653d1d4c011d}</destination>
-			<destination>{db7e4463-b3fa-4426-a017-38f1f9253d4b}</destination>
-			<destination>{7c85e1e0-22fe-480c-afa6-89a836db208c}</destination>
-			<destination>{f66f4062-8be6-4362-bd72-a53e0c6bf43c}</destination>
 			<destination>{8d29a414-d5c9-4188-b397-168d05bfd32c}</destination>
 		</relationship>
 	</object>
@@ -289,87 +285,12 @@
 			<value>25</value>
 		</property>
 	</object>
-	<object class="PitchShifterEffect" id="{1d489b39-71bc-48bc-beec-1da3f747a2d0}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="pitch">
-			<value>0.709999979</value>
-		</property>
-		<property name="fftSize">
-			<value>256</value>
-		</property>
-		<property name="overlap">
-			<value>1</value>
-		</property>
-	</object>
 	<object class="RandomizerModulator" id="{545f3d99-c6f2-486e-a46d-539796ca955b}">
 		<property name="nameOfPropertyBeingModulated">
 			<value>pitch</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{986779be-5f23-47ac-b38e-653d1d4c011d}" />
-	<object class="PitchShifterEffect" id="{db7e4463-b3fa-4426-a017-38f1f9253d4b}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="pitch">
-			<value>0.709999979</value>
-		</property>
-		<property name="fftSize">
-			<value>256</value>
-		</property>
-		<property name="overlap">
-			<value>1</value>
-		</property>
-	</object>
-	<object class="DelayEffect" id="{7c85e1e0-22fe-480c-afa6-89a836db208c}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="delay">
-			<value>34</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{12ac6339-4449-43c0-9bae-1afa1af4242f}</destination>
-		</relationship>
-	</object>
-	<object class="MultibandEqEffect" id="{f66f4062-8be6-4362-bd72-a53e0c6bf43c}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
-		<property name="filterTypeA">
-			<value>4</value>
-		</property>
-		<property name="filterTypeB">
-			<value>9</value>
-		</property>
-		<property name="filterTypeE">
-			<value>8</value>
-		</property>
-		<property name="frequencyA">
-			<value>110</value>
-		</property>
-		<property name="frequencyB">
-			<value>1908.86487</value>
-		</property>
-		<property name="frequencyE">
-			<value>6348.49707</value>
-		</property>
-		<property name="qualityA">
-			<value>0.697135448</value>
-		</property>
-		<property name="gainB">
-			<value>3.47779155</value>
-		</property>
-		<property name="gainE">
-			<value>10.7583981</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{cf76845f-815f-4601-8be6-a64fbabff68c}</destination>
-			<destination>{67a0b4b6-769f-42ff-8972-286582c12c61}</destination>
-		</relationship>
-	</object>
 	<object class="MultibandEqEffect" id="{8d29a414-d5c9-4188-b397-168d05bfd32c}">
 		<property name="filterTypeA">
 			<value>0</value>
@@ -415,30 +336,6 @@
 			<destination>{13228f23-5c94-41e8-98a2-aa02ed1c74ee}</destination>
 			<destination>{d5967e08-2ebd-4421-98b4-166a93a882be}</destination>
 		</relationship>
-	</object>
-	<object class="RandomizerModulator" id="{12ac6339-4449-43c0-9bae-1afa1af4242f}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>delay</value>
-		</property>
-		<property name="amount">
-			<value>16</value>
-		</property>
-	</object>
-	<object class="RandomizerModulator" id="{cf76845f-815f-4601-8be6-a64fbabff68c}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>frequencyA</value>
-		</property>
-		<property name="amount">
-			<value>15</value>
-		</property>
-	</object>
-	<object class="RandomizerModulator" id="{67a0b4b6-769f-42ff-8972-286582c12c61}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>frequencyB</value>
-		</property>
-		<property name="amount">
-			<value>20.5</value>
-		</property>
 	</object>
 	<object class="Automator" id="{ff134458-9926-4ef7-8ef6-006547d34b55}">
 		<property name="nameOfPropertyBeingAutomated">
