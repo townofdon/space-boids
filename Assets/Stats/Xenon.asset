@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Xenon
   m_EditorClassIdentifier: 
   moveSpeed: 7
-  rotationSpeed: 180
+  rotationSpeed: 166
+  rotationVariance: 42
   awarenessLatency: 0.12
   awarenessVariance: 0.06
+  audioLatency: 0.2
+  audioScreenCutoff: 0.75
   reflectOffScreenEdges: 0
   sightDistance: 5
   steeringVariance: 0.44
@@ -25,7 +28,7 @@ MonoBehaviour:
   alignment: 0.121
   followTheLeader: 0
   avoidance: 1
-  runFromPredators: 0.096
+  runFromPredators: 0.106
   seekFood: 0.375
   closenessMod:
     serializedVersion: 2
@@ -65,6 +68,30 @@ MonoBehaviour:
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.23333335
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  forwardnessMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -123,11 +150,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  wallRaycastLatency: 0.5
-  wallRaycastVariance: 0.2
+  wallRaycastLatency: 0.6
+  wallRaycastVariance: 0.3
   wallLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 4608
   wallAvoidanceMod:
     serializedVersion: 2
     m_Curve:

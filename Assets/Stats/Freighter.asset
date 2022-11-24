@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   rotationSpeed: 90
+  rotationVariance: 15
   awarenessLatency: 0.25
   awarenessVariance: 0.1
+  audioLatency: 0.2
+  audioScreenCutoff: 0.75
   reflectOffScreenEdges: 0
   sightDistance: 9
   steeringVariance: 0.44
@@ -65,6 +68,30 @@ MonoBehaviour:
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.23333335
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  forwardnessMod:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -127,7 +154,7 @@ MonoBehaviour:
   wallRaycastVariance: 0.6
   wallLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 4608
   wallAvoidanceMod:
     serializedVersion: 2
     m_Curve:

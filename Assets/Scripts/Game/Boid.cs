@@ -1,9 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using FMODUnity;
-using Unity.Mathematics;
-using Unity.Jobs;
-using Unity.Collections;
 
 // NOTES FOR FUTURE DON
 // I think the solution here is to jobify the individual Boid scripts.
@@ -53,6 +50,7 @@ public class Boid : MonoBehaviour
     CircleCollider2D circle;
     StudioEventEmitter emitter;
     GameManager gameManager;
+    Player player;
 
     // state
     float rotationSpeed = 360f;
@@ -116,8 +114,10 @@ public class Boid : MonoBehaviour
 
     public float SightDistance => stats.sightDistance;
 
+    float forwardness;
     float closeness;
     float maxCloseness;
+    float rotationVariance = 0f;
 
     Vector2 sightVector = Vector2.up;
     Vector2 desiredHeading = Vector2.up;
@@ -157,6 +157,11 @@ public class Boid : MonoBehaviour
     {
         if (other == null) return 0f;
         return Vector2.Dot((Vector2)other.position - position, velocity);
+    }
+    public float ForwardnessTo(Vector2 other)
+    {
+        if (other == null) return 0f;
+        return Vector2.Dot(other - position, velocity);
     }
 
     public Vector2 LineTo(Boid other) { return LineTo(other.transform); }
@@ -200,6 +205,10 @@ public class Boid : MonoBehaviour
         if (other == null) return Mathf.Infinity;
         return Vector2.Distance(position, other.position);
     }
+    public float DistanceTo(Vector2 other)
+    {
+        return Vector2.Distance(position, other);
+    }
 
     public bool CanSee(Boid other) { return CanSee(other.transform); }
     public bool CanSee(Obstacle other) { return CanSee(other.transform); }
@@ -209,6 +218,7 @@ public class Boid : MonoBehaviour
         if (other == null) return false;
         if (Mathf.Abs(other.position.x - position.x) > stats.sightDistance) return false;
         if (Mathf.Abs(other.position.y - position.y) > stats.sightDistance) return false;
+        if (ForwardnessTo(other) < -0.75) return false;
         return Vector2.Distance(transform.position, other.position) <= stats.sightDistance;
     }
 
@@ -216,7 +226,6 @@ public class Boid : MonoBehaviour
     {
         Simulation.RegisterBoid(this);
         GlobalEvent.Subscribe(OnGlobalEvent);
-
     }
 
     void OnDisable()
@@ -227,7 +236,7 @@ public class Boid : MonoBehaviour
 
     void OnGlobalEvent(GlobalEvent.type eventType)
     {
-        if (eventType == GlobalEvent.type.SIMULATION_START) emitter.Play();
+        if (eventType == GlobalEvent.type.SIMULATION_START) StartCoroutine(PlayOrStopAudio());
     }
 
     void Awake()
@@ -235,6 +244,7 @@ public class Boid : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         circle = GetComponent<CircleCollider2D>();
         emitter = GetComponent<StudioEventEmitter>();
+        player = GameObject.FindWithTag("Player").GetComponent<Player>();
         gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
     }
 
@@ -243,6 +253,8 @@ public class Boid : MonoBehaviour
         if (rb == null) Debug.LogWarning($"You need to add a rigidbody2d to the Boid script for \"{gameObject.name}\"");
         desiredHeading = transform.up;
         awarenessLatency = stats.awarenessLatency + UnityEngine.Random.Range(0f, stats.awarenessVariance);
+        timeSinceLastPerceived = UnityEngine.Random.Range(0f, awarenessLatency);
+        rotationVariance = UnityEngine.Random.Range(-stats.rotationVariance, stats.rotationVariance);
         StartCoroutine(LookForWalls());
     }
 
@@ -293,10 +305,10 @@ public class Boid : MonoBehaviour
 
     void Awareness()
     {
-        awarenessLatency = stats.awarenessLatency + UnityEngine.Random.Range(0f, stats.awarenessVariance);
         if (timeSinceLastPerceived < awarenessLatency)
         {
-            timeSinceLastPerceived += Time.deltaTime;
+            awarenessLatency = stats.awarenessLatency + UnityEngine.Random.Range(0f, stats.awarenessVariance);
+            timeSinceLastPerceived += Time.deltaTime * Simulation.speed;
         }
     }
 
@@ -357,13 +369,15 @@ public class Boid : MonoBehaviour
     {
         if (timeSinceLastPerceived < awarenessLatency) return;
         alignment = Vector2.zero;
+        forwardness = 0f;
         if (CalcStat(stats.alignment, gameManager.state.alignment) <= 0) return;
         if (neighborCount == 0) return;
         if (leader == null) return;
         for (int i = 0; i < neighborCount; i++)
         {
             if (!IsOtherAlive(neighbors[i])) continue;
-            alignment += neighbors[i].velocity;
+            forwardness = ForwardnessTo(neighbors[i]);
+            alignment += neighbors[i].velocity * forwardness;
         }
         alignment *= neighborCountQuotient;
         alignment = alignment.normalized;
@@ -399,12 +413,38 @@ public class Boid : MonoBehaviour
             // get closeness where 0 => MIN, 1 => MAX avoidance radius
             closeness = Mathf.Clamp01(closeness / (obstaclesNearby[i].avoidanceMaxRadius - obstaclesNearby[i].avoidanceMinRadius));
             closeness = Mathf.Pow(closeness, stats.avoidanceTension);
-            if (closeness > maxCloseness) maxCloseness = closeness;
             closeness = closeness * stats.avoidanceStrength * obstaclesNearby[i].avoidanceMod;
             avoidObstacles += HeadingFrom(obstaclesNearby[i]) * closeness;
         }
         rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, maxCloseness);
         desiredHeading += avoidObstacles * 2f;
+        // if (timeSinceLastPerceived < awarenessLatency) return;
+        // avoidObstacles = Vector2.zero;
+        // closeness = 0f;
+        // forwardness = 0f;
+        // maxCloseness = 0f;
+        // Vector2 projectedPoint;
+        // if (stats.avoidance <= 0) return;
+        // if (obstaclesNearbyCount == 0) return;
+        // for (int i = 0; i < obstaclesNearbyCount; i++)
+        // {
+        //     projectedPoint = obstaclesNearby[i].position - (Vector2)transform.up * obstaclesNearby[i].avoidanceMinRadius;
+        //     forwardness = ForwardnessTo(obstaclesNearby[i]);
+        //     if (forwardness <= .25f) continue;
+        //     if (DistanceTo(obstaclesNearby[i]) >= obstaclesNearby[i].avoidanceMaxRadius) continue;
+        //     forwardness = Mathf.Clamp01(Mathf.Clamp01(stats.forwardnessMod.Evaluate((forwardness - 0.66f) * 3.33f)));
+        //     // get closeness as a value from MIN to (MAX - MIN)
+        //     closeness = obstaclesNearby[i].avoidanceMaxRadius - (DistanceTo(obstaclesNearby[i]) - obstaclesNearby[i].avoidanceMinRadius);
+        //     // get closeness where 0 => MIN, 1 => MAX avoidance radius
+        //     closeness = Mathf.Clamp01(closeness / (obstaclesNearby[i].avoidanceMaxRadius - obstaclesNearby[i].avoidanceMinRadius));
+        //     if (closeness > maxCloseness) maxCloseness = closeness;
+        //     avoidObstacles += (projectedPoint + (Vector2)transform.right * obstaclesNearby[i].AvoidanceOrientation * velocity.magnitude) * (1f - closeness) * forwardness;
+        //     closeness = Mathf.Pow(closeness, stats.avoidanceTension);
+        //     closeness = closeness * stats.avoidanceStrength * obstaclesNearby[i].avoidanceMod;
+        //     avoidObstacles += HeadingFrom(obstaclesNearby[i]) * closeness + projectedPoint + (Vector2)transform.right;
+        // }
+        // rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, maxCloseness) + rotationVariance;
+        // desiredHeading += avoidObstacles * 2f;
     }
 
     void SeekFood()
@@ -507,8 +547,10 @@ public class Boid : MonoBehaviour
     Vector2 AvoidWalls()
     {
         if (!wallHit) return desiredHeading;
+        if (timeSinceLastPerceived == 0 || timeSinceLastPerceived >= awarenessLatency) return desiredHeading;
         if (wallHit.collider == null) return desiredHeading;
         float wallAvoidance = stats.wallAvoidanceMod.Evaluate((stats.sightDistance - wallHit.distance) / stats.sightDistance);
+        rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, wallAvoidance) + rotationVariance;
         return Vector2.Lerp(desiredHeading, wallHit.normal, wallAvoidance);
     }
 
@@ -525,6 +567,29 @@ public class Boid : MonoBehaviour
         {
             yield return new WaitForSeconds(stats.wallRaycastLatency + UnityEngine.Random.Range(0f, stats.wallRaycastVariance));
             RaycastWalls();
+        }
+    }
+
+    bool IsOutsideAudioBounds()
+    {
+        if (Mathf.Abs(position.x - player.transform.position.x) > Utils.GetScreenStats().screenWidth * stats.audioScreenCutoff) return true;
+        if (Mathf.Abs(position.y - player.transform.position.y) > Utils.GetScreenStats().screenHeight * stats.audioScreenCutoff) return true;
+        return false;
+    }
+
+    IEnumerator PlayOrStopAudio()
+    {
+        while (true)
+        {
+            if (IsOutsideAudioBounds() || UnityEngine.Random.Range(0f, 1f) > 0.95f)
+            {
+                emitter.Stop();
+            }
+            else if (!emitter.IsPlaying())
+            {
+                emitter.Play();
+            }
+            yield return new WaitForSeconds(stats.audioLatency);
         }
     }
 
@@ -578,7 +643,7 @@ public class Boid : MonoBehaviour
         {
             if (obstaclesNearby[i] == null || !obstaclesNearby[i].isActiveAndEnabled) continue;
             Gizmos.color = Color.red.toAlpha(0.4f);
-            Gizmos.DrawLine(transform.position, obstaclesNearby[i].position);
+            // Gizmos.DrawLine(transform.position, obstaclesNearby[i].position);
             Gizmos.DrawSphere(obstaclesNearby[i].position, 0.5f);
         }
     }

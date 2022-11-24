@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 631725922789822193, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: m_InstanceId
-      value: -506832
+      value: -647406
       objectReference: {fileID: 0}
     - target: {fileID: 631725922789822193, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: m_ShapePathHash
@@ -76,12 +76,16 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7837119443524008412, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
+      propertyPath: debug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7837119443524008412, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: avoidanceMod
       value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7837119443524008412, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: avoidanceMaxRadius
-      value: 1
+      value: 2.17
       objectReference: {fileID: 0}
     - target: {fileID: 7837119443524008412, guid: 2b8439a92226b4606b37773338ffb5a5, type: 3}
       propertyPath: avoidanceMinRadius

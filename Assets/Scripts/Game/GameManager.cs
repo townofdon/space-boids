@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
 #if (!UNITY_EDITOR && UNITY_WEBGL)
         useJobs = false;
 #endif
-
     }
 
     void Start()

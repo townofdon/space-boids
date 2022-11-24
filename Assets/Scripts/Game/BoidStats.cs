@@ -5,8 +5,15 @@ public class BoidStats : ScriptableObject
 {
     public float moveSpeed = 5f;
     public float rotationSpeed = 360f;
+    public float rotationVariance = 45f;
     public float awarenessLatency = 0.2f;
     public float awarenessVariance = 0.1f;
+
+    [Space]
+    [Space]
+
+    public float audioLatency = 0.4f;
+    public float audioScreenCutoff = 0.75f;
 
     [Space]
     [Space]
@@ -31,6 +38,7 @@ public class BoidStats : ScriptableObject
     [Space]
 
     public AnimationCurve closenessMod = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+    public AnimationCurve forwardnessMod = AnimationCurve.Linear(0f, 0f, 1f, 1f);
     public float avoidanceTension = 2f;
     public float avoidanceStrength = 1f;
     public float avoidanceRotationMod = 2f;

@@ -9,8 +9,13 @@ public class Obstacle : MonoBehaviour
 
     [HideInInspector] public Vector2 position => transform.position;
 
+    float avoidanceOrientation = 1f;
+
+    public float AvoidanceOrientation => avoidanceOrientation;
+
     void OnEnable()
     {
+        avoidanceOrientation = UnityEngine.Random.Range(0, 2) == 0 ? 1f : -1f;
         Simulation.RegisterObstacle(this);
     }
 
