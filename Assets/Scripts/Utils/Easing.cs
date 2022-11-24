@@ -94,6 +94,9 @@ public static class Easing
             ? (math.pow(2f * x, 2f) * (((backAmount * stabilize) + 1f) * 2f * x - (backAmount * stabilize))) / 2f
             : (math.pow(2f * x - 2f, 2f) * (((backAmount * stabilize) + 1f) * (x * 2f - 2f) + (backAmount * stabilize)) + 2f) / 2f;
     }
+
+    public static float OutCirc(float x)
+    {
+        return math.sqrt(1 - math.pow(x - 1, 2));
+    }
 }
-
-

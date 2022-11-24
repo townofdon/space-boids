@@ -1,9 +1,15 @@
-using System.Collections;
-using UnityEngine;
 using Unity.Mathematics;
 using Unity.Jobs;
 using Unity.Collections;
 using Unity.Burst;
+
+// NOTES
+// This file contains leftover code from an attempt at reimplementing the Boids
+// Simulation code using the Unity Jobs system + Burst compiler. Initial tests
+// did look SUPER promising! However I discovered that Unity jobs are not
+// supported very well, if at all, in WebGL so I abandoned this approach. But
+// I absolutely do not regret taking the time to learn a little about DOTS
+// and the sheer power of leveraging CPU parallelization.
 
 struct JUtil
 {
@@ -22,36 +28,7 @@ struct JUtil
     {
         return math.normalize(origin - target);
     }
-
-    // public static bool IsNeighbor(int neighborIndex, int neighborMask)
-    // {
-    //     return (((1 << neighborIndex)) & neighborMask) > 0;
-    // }
-
-    // public static int AddNeighbor(int neighborIndex, int neighborMask)
-    // {
-    //     if (IsNeighbor(neighborIndex, neighborMask)) return neighborMask;
-    //     return neighborMask + (1 << neighborIndex);
-    // }
 }
-
-// public struct GetNieghborsJob : IJobParallelFor
-// {
-//     // NOTE - ALL ARRAYS BELOW MUST BE THE SAME LENGTH
-//     [ReadOnly] public NativeArray<float2> AllBoids;
-//     [ReadOnly] public NativeArray<bool> BoidsToReject;
-//     public NativeArray<bool> Neighbors; // out
-
-//     public float2 CurrentBoid;
-//     public float SightDistance;
-
-//     public void Execute(int i)
-//     {
-//         if (BoidsToReject[i]) return;
-//         if (!CanSee(CurrentBoid, AllBoids[i], SightDistance)) return;
-//         Neighbors[i] = true;
-//     }
-// }
 
 // // public static int GetObstaclesNearby(Boid current, Obstacle[] obstaclesNearby)
 // // {
@@ -123,44 +100,6 @@ struct JUtil
 // }
 
 
-// public struct PerceiveEnvironmentJob : IJobParallelFor
-// {
-//     [ReadOnly] public NativeArray<float2> Positions; // AllBoids
-//     [ReadOnly] public NativeArray<float2> Velocities; // AllBoids
-//     [ReadOnly] public NativeArray<float2> AllObstacles;
-//     [ReadOnly] public NativeArray<float2> AllPredators;
-//     [ReadOnly] public NativeArray<float2> AllFoods;
-//     [ReadOnly] public NativeArray<bool> RejectBoids;
-//     [ReadOnly] public NativeArray<bool> RejectObstacles;
-//     [ReadOnly] public NativeArray<bool> RejectPredators;
-//     [ReadOnly] public NativeArray<bool> RejectFoods;
-//     [ReadOnly] public NativeArray<float> SightDistance;
-
-//     public NativeArray<bool> Neighbors; // 2D array
-//     public NativeArray<bool> PredatorsNearby; // 2D array
-//     public NativeArray<bool> ObstaclesNearby; // 2D array
-//     public NativeArray<bool> ClosestFood; // 2D array
-
-//     public void Execute(int current)
-//     {
-//         for (int other = 0; other < Positions.Length; other++)
-//         {
-//             if (current == other) continue;
-//             if (RejectBoids[other]) continue;
-//             if (!CanSee(Positions[current], Positions[other], SightDistance[current])) return;
-//             // Neighbors[_neighborCount] = AllBoidPositions[current];
-//             // Neighbors[_neighborCount] = AllBoidPositions[current];
-//             // _neighborCount++;
-//         }
-//     }
-
-//     bool CanSee(float2 origin, float2 target, float sightDistance)
-//     {
-//         if (sightDistance <= 0) return false;
-//         return math.distance(origin, target) <= sightDistance;
-//     }
-// }
-
 [BurstCompile]
 public struct CohesionJob : IJobParallelFor
 {
@@ -185,7 +124,6 @@ public struct CohesionJob : IJobParallelFor
             if (RejectBoids[other]) continue;
             if (BoidTypes[current] != BoidTypes[other]) continue;
             if (!JUtil.CanSee(Positions[current], Positions[other], SightDistance[current])) continue;
-            // if (!IsNeighbor(other, Neighbors[current])) continue;
             Cohesion[current] += Positions[other];
             total++;
         }
@@ -218,7 +156,6 @@ public struct SeparationJob : IJobParallelFor
             if (RejectBoids[other]) continue;
             if (BoidTypes[current] != BoidTypes[other]) continue;
             if (!JUtil.CanSee(Positions[current], Positions[other], SightDistance[current])) continue;
-            // if (!IsNeighbor(other, Neighbors[current])) continue;
             closeness = (SightDistance[current] - math.distance(Positions[current], Positions[other])) / SightDistance[current];
             closeness = math.clamp(closeness, 0f, 1f);
             closeness = math.lerp(Easing.InExpo(closeness), Easing.InOutQuint(closeness), closeness);
@@ -258,6 +195,10 @@ public struct AlignmentJob : IJobParallelFor
         Alignment[current] = math.normalize(Alignment[current]);
     }
 }
+
+// --------------------------------------------------------------------------------------
+// Below is leftover code from before I started splitting behavior out into separate jobs
+// --------------------------------------------------------------------------------------
 
 [BurstCompatible]
 public struct BoidsJob : IJobParallelFor

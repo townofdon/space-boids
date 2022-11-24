@@ -82,14 +82,16 @@ public class Food : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
         Simulation.RegisterFood(this);
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         Simulation.DeregisterFood(this);
+        intensify.Kill();
+        transparencify.Kill();
     }
 
     void Awake()

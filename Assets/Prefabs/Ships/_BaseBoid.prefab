@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2646695288136592699}
   - component: {fileID: 3022245137468945617}
   - component: {fileID: 3508351270250232750}
-  - component: {fileID: 3356495311782705691}
   m_Layer: 6
   m_Name: _BaseBoid
   m_TagString: Untagged
@@ -229,33 +228,6 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: -1
   OverrideMaxDistance: -1
---- !u!114 &3356495311782705691
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8474355229086832000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShadowGroup: 0
-  m_ComponentVersion: 1
-  m_HasRenderer: 1
-  m_UseRendererSilhouette: 1
-  m_CastsShadows: 1
-  m_SelfShadows: 0
-  m_ApplyToSortingLayers: 00000000e1d8ec40adb5058cb7268787ef46e76d25fa3bea
-  m_ShapePath:
-  - {x: -5, y: -5, z: 0}
-  - {x: -5, y: 5, z: 0}
-  - {x: 5, y: 5, z: 0}
-  - {x: 5, y: -5, z: 0}
-  m_ShapePathHash: 0
-  m_Mesh: {fileID: 0}
-  m_InstanceId: 653390
 --- !u!1 &8474355229200189828
 GameObject:
   m_ObjectHideFlags: 0
