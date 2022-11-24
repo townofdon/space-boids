@@ -28,6 +28,9 @@
 	<object class="MixerBusPanner" id="{4cab3367-58c6-48f0-acfe-d3927e34f237}" />
 	<object class="MixerBusFader" id="{2ce9cb82-d758-4345-9864-2feea88422d7}" />
 	<object class="SFXReverbEffect" id="{3d6cd28b-a7b0-4d72-b343-44ea0c819385}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="decayTime">
 			<value>170</value>
 		</property>
@@ -78,31 +81,31 @@
 			<value>7</value>
 		</property>
 		<property name="filterTypeD">
-			<value>2</value>
+			<value>9</value>
 		</property>
 		<property name="filterTypeE">
 			<value>5</value>
 		</property>
 		<property name="frequencyA">
-			<value>123.883209</value>
+			<value>129.124557</value>
 		</property>
 		<property name="frequencyB">
-			<value>1046.71228</value>
+			<value>1398.94983</value>
 		</property>
 		<property name="frequencyC">
 			<value>80</value>
 		</property>
 		<property name="frequencyD">
-			<value>22000</value>
+			<value>7973.53955</value>
 		</property>
 		<property name="frequencyE">
 			<value>20.0000019</value>
 		</property>
 		<property name="qualityA">
-			<value>0.579999983</value>
+			<value>0.381469101</value>
 		</property>
 		<property name="qualityB">
-			<value>0.479999989</value>
+			<value>0.299999982</value>
 		</property>
 		<property name="qualityD">
 			<value>0.199999988</value>
@@ -110,8 +113,14 @@
 		<property name="qualityE">
 			<value>0.954953492</value>
 		</property>
+		<property name="gainB">
+			<value>7.11809254</value>
+		</property>
 		<property name="gainC">
 			<value>-10.5</value>
+		</property>
+		<property name="gainD">
+			<value>1.39761686</value>
 		</property>
 		<relationship name="automators">
 			<destination>{6f031fdc-c0f3-4656-99e6-1c8c624e1e17}</destination>

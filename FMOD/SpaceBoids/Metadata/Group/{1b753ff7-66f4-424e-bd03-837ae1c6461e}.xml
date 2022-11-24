@@ -27,6 +27,9 @@
 	<object class="MixerBusPanner" id="{186b4b10-1a70-4899-b77e-a1de96ee369d}" />
 	<object class="MixerBusFader" id="{19a9b817-3207-40c9-9dd4-063fe6365a71}" />
 	<object class="FlangerEffect" id="{bf06380d-00f6-4bae-9da1-ac2f029744a1}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="rate">
 			<value>0.399999976</value>
 		</property>
@@ -49,13 +52,13 @@
 			<value>9</value>
 		</property>
 		<property name="frequencyA">
-			<value>105</value>
+			<value>118.854614</value>
 		</property>
 		<property name="frequencyC">
 			<value>2195.39697</value>
 		</property>
 		<property name="qualityA">
-			<value>0.612957776</value>
+			<value>0.465646803</value>
 		</property>
 		<property name="qualityC">
 			<value>0.419999987</value>

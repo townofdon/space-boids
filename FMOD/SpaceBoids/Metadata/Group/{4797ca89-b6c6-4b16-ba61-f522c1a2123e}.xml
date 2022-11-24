@@ -42,6 +42,9 @@
 		</property>
 	</object>
 	<object class="LimiterEffect" id="{f92fee17-73cf-48a6-b415-286205e645ae}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="ceiling">
 			<value>-4.70000029</value>
 		</property>
@@ -50,11 +53,22 @@
 		</property>
 	</object>
 	<object class="MultibandEqEffect" id="{743770ba-7f45-40d6-8644-8db1e40eb3ce}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="frequencyA">
 			<value>22000</value>
 		</property>
 		<property name="qualityA">
 			<value>0.676091015</value>
+		</property>
+		<relationship name="automators">
+			<destination>{f8eb1ccd-96bc-4b91-841f-7a8d9937cc65}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{f8eb1ccd-96bc-4b91-841f-7a8d9937cc65}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>frequencyA</value>
 		</property>
 	</object>
 </objects>

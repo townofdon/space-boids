@@ -69,10 +69,16 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{7ef8dd93-2401-460d-8654-90860a9a9884}">
 		<property name="maxVoices">
-			<value>21</value>
+			<value>14</value>
 		</property>
 		<property name="voiceStealing">
 			<value>1</value>
+		</property>
+		<property name="minimumDistance">
+			<value>1.60000002</value>
+		</property>
+		<property name="maximumDistance">
+			<value>15</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{e7b94487-a63a-4792-911d-044fcf79085e}" />
@@ -188,7 +194,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{b6136b4c-0c2d-4c89-bd03-8e4002eb3e35}">
 		<property name="volume">
-			<value>-4.5</value>
+			<value>-3</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -868,7 +874,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{941a58dd-0957-46f4-a7bb-4f648103624d}" />
 	<object class="MixerBusFader" id="{c1173057-af06-45b7-8a64-16c8ed9b4e90}" />
-	<object class="SpatialiserEffect" id="{7b66015d-73d5-47e5-a4b0-2c76c797d907}" />
+	<object class="SpatialiserEffect" id="{7b66015d-73d5-47e5-a4b0-2c76c797d907}">
+		<property name="minimumDistance">
+			<value>1.60000002</value>
+		</property>
+		<property name="maximumDistance">
+			<value>15</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{e382d769-57da-48fe-b4f6-87b6c2ea29eb}" />
 	<object class="SFXReverbEffect" id="{01f3c886-ea9c-4765-abac-a1b26e04d2b1}">
 		<property name="bypass">
@@ -924,14 +937,8 @@
 		</property>
 	</object>
 	<object class="MultibandEqEffect" id="{f9047e6f-eafc-40a7-a4f9-d3ccf7be994c}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
 		<property name="filterTypeA">
-			<value>4</value>
-		</property>
-		<property name="filterTypeB">
-			<value>9</value>
+			<value>0</value>
 		</property>
 		<property name="filterTypeD">
 			<value>2</value>
@@ -961,7 +968,7 @@
 			<value>0.199999988</value>
 		</property>
 		<property name="qualityE">
-			<value>0.954953492</value>
+			<value>0.519999981</value>
 		</property>
 		<property name="gainB">
 			<value>4.5178771</value>

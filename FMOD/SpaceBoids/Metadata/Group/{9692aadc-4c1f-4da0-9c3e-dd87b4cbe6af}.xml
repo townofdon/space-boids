@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
 	<object class="MixerGroup" id="{9692aadc-4c1f-4da0-9c3e-dd87b4cbe6af}">
-		<property name="note" />
 		<property name="name">
 			<value>SFX</value>
 		</property>
@@ -24,6 +23,9 @@
 	<object class="MixerBusPanner" id="{bfdba0eb-9169-48b2-bbd7-ab9fb95b8dda}" />
 	<object class="MixerBusFader" id="{6abf7413-0dbc-4c57-ba63-28d9d83334be}" />
 	<object class="CompressorEffect" id="{7f556ebf-aa70-4a9f-aa8c-f2f174afc169}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="threshold">
 			<value>-4</value>
 		</property>
