@@ -20,15 +20,27 @@ public class ScreenshotManager : MonoBehaviour
         if (mode == ScreenshotMode.DISABLED)
         {
             mode = ScreenshotMode.READY;
+            OnModeReady();
         }
         else
         {
             mode = ScreenshotMode.DISABLED;
+            screenshotUI.Hide();
         }
     }
 
     public void TryToTakeScreenshot()
     {
+        screenshotUI.Flash();
+    }
 
+    void OnModeReady()
+    {
+        screenshotUI.Show();
+    }
+
+    void OnModeDisabled()
+    {
+        screenshotUI.Hide();
     }
 }

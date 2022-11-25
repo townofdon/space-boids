@@ -125,13 +125,15 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnSettings(InputValue value)
     {
+        if (screenshotManager.isScreenshotModeEnabled) return;
         if (!value.isPressed) return;
         settings.ToggleMenu();
     }
 
     // PlayerInput message
-    void OnScreenshotMode(InputValue value)
+    void OnToggleScreenshotMode(InputValue value)
     {
+        if (isInputDisabled) return;
         if (!value.isPressed) return;
         screenshotManager.ToggleScreenshotMode();
     }
@@ -139,6 +141,7 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnTakeScreenshot(InputValue value)
     {
+        if (isInputDisabled) return;
         if (!value.isPressed) return;
         screenshotManager.TryToTakeScreenshot();
     }
