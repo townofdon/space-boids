@@ -11,7 +11,7 @@ public static class ScreenshotUtils
     // NOTE - make sure your screenshots directory is excluded from source control
     const string SCREENSHOTS_FOLDER = "Screenshots/";
     const string SCREENSHOTS_FILENAME = "SpaceBoidsScreenshot";
-    const string TIMESTAMP_FORMAT = "yyyyMMdd-HHmmssfff";
+    const string TIMESTAMP_FORMAT = "yyyyMMddHHmmssfff";
     const string FILE_EXTENSION = "png";
 
     // see: /Assets/Plugins/download.jslib

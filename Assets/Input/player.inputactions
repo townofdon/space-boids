@@ -272,6 +272,17 @@
                 },
                 {
                     "name": "",
+                    "id": "ec364233-8a6c-434c-ac2c-954e2b3b9007",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "c219514c-c330-4db4-8f33-23756470a91a",
                     "path": "<Keyboard>/m",
                     "interactions": "",
