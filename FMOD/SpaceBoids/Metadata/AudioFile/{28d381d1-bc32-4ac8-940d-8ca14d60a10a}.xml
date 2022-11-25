@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{28d381d1-bc32-4ac8-940d-8ca14d60a10a}">
+		<property name="assetPath">
+			<value>ProcessedBoids/pod-02.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>9.1178911564625853</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4bc703f9-1a76-4319-b5ae-07129eb34da9}</destination>
+		</relationship>
+	</object>
+</objects>

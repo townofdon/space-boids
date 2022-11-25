@@ -64,7 +64,7 @@
 			<value>20</value>
 		</property>
 		<property name="voiceStealing">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<property name="minimumDistance">
 			<value>3.60000014</value>
@@ -205,9 +205,6 @@
 		<property name="volume">
 			<value>-5.5</value>
 		</property>
-		<property name="pitch">
-			<value>-10</value>
-		</property>
 		<property name="looping">
 			<value>true</value>
 		</property>
@@ -215,18 +212,21 @@
 			<destination>{545f3d99-c6f2-486e-a46d-539796ca955b}</destination>
 		</relationship>
 		<relationship name="audioFile">
-			<destination>{9dc3fc61-e943-448a-850d-2d310ff8d799}</destination>
+			<destination>{7ffd0f24-ddfb-4bb0-a12d-db24b22747e7}</destination>
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{768b3a8c-5299-49d6-b0ee-ce726e9f3459}">
 		<property name="pitch">
-			<value>-9.5</value>
+			<value>-5.5</value>
 		</property>
 		<property name="looping">
 			<value>true</value>
 		</property>
+		<relationship name="modulators">
+			<destination>{38eef3ca-a5a2-4da5-9b83-4ecd3f666aec}</destination>
+		</relationship>
 		<relationship name="audioFile">
-			<destination>{48c21806-f23c-40be-b19e-2d2c4b8bdea8}</destination>
+			<destination>{28d381d1-bc32-4ac8-940d-8ca14d60a10a}</destination>
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{f7bdd07a-aa2a-4e43-922d-2904f30026dc}">
@@ -240,7 +240,7 @@
 			<value>true</value>
 		</property>
 		<relationship name="audioFile">
-			<destination>{ae194789-98b2-400c-8129-0daf46ab1e58}</destination>
+			<destination>{93580a56-1802-4bfa-a8d8-520fdbfcf448}</destination>
 		</relationship>
 	</object>
 	<object class="ADSRModulator" id="{5b09417a-1f4c-4548-9a67-5205fa5e8118}">
@@ -288,6 +288,17 @@
 	<object class="RandomizerModulator" id="{545f3d99-c6f2-486e-a46d-539796ca955b}">
 		<property name="nameOfPropertyBeingModulated">
 			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>12.5</value>
+		</property>
+	</object>
+	<object class="RandomizerModulator" id="{38eef3ca-a5a2-4da5-9b83-4ecd3f666aec}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>pitch</value>
+		</property>
+		<property name="amount">
+			<value>15.5</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{986779be-5f23-47ac-b38e-653d1d4c011d}" />

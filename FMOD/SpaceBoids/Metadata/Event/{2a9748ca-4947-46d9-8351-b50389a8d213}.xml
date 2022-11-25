@@ -61,7 +61,7 @@
 			<value>15</value>
 		</property>
 		<property name="voiceStealing">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<property name="minimumDistance">
 			<value>3.60000014</value>
@@ -129,7 +129,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{5e69b6c5-72b6-4046-b48e-34c319a32efe}">
 		<property name="volume">
-			<value>-6</value>
+			<value>-4.5</value>
 		</property>
 		<property name="name">
 			<value>Audio 1</value>
@@ -182,32 +182,35 @@
 	</object>
 	<object class="SingleSound" id="{ec4636d6-2395-4498-b326-f89606b1f047}">
 		<property name="volume">
-			<value>-19</value>
+			<value>-16</value>
 		</property>
 		<property name="pitch">
-			<value>8.5</value>
+			<value>3.20000005</value>
 		</property>
 		<property name="looping">
 			<value>true</value>
 		</property>
 		<relationship name="audioFile">
-			<destination>{b15d7514-9090-44c1-840c-31b0f6fc3935}</destination>
+			<destination>{680a8d3f-96df-4cd6-bedc-85ba2f11ee80}</destination>
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{f1b0720c-daf5-421b-bdd5-58dfa3d188f0}">
+		<property name="volume">
+			<value>-11.5</value>
+		</property>
 		<property name="pitch">
-			<value>5.5</value>
+			<value>1.20000005</value>
 		</property>
 		<property name="looping">
 			<value>true</value>
 		</property>
 		<relationship name="audioFile">
-			<destination>{01de2dc7-f868-40ee-9a63-bde1d747e9ed}</destination>
+			<destination>{95950b3a-2e12-4478-a46b-0cfeec41a05a}</destination>
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{aa995235-c8b9-476a-9107-db48a276bf5a}">
 		<property name="volume">
-			<value>-7.5</value>
+			<value>-12</value>
 		</property>
 		<property name="pitch">
 			<value>5</value>
@@ -216,7 +219,7 @@
 			<value>true</value>
 		</property>
 		<relationship name="audioFile">
-			<destination>{93609a5b-a103-4997-89b6-12e1d66e264f}</destination>
+			<destination>{17f4c031-56da-412e-8d93-fcf846f5358e}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{983ce049-d326-47f4-956c-d0fbc33821f5}">
