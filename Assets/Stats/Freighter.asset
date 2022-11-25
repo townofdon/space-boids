@@ -17,7 +17,8 @@ MonoBehaviour:
   rotationVariance: 15
   awarenessLatency: 0.25
   awarenessVariance: 0.1
-  audioLatency: 0.2
+  audioDelay: 3
+  audioLatency: 1.5
   audioScreenCutoff: 0.75
   reflectOffScreenEdges: 0
   sightDistance: 9

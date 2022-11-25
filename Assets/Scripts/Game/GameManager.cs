@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
     {
         state = new GameState();
 
-#if (!UNITY_EDITOR && UNITY_WEBGL)
-        useJobs = false;
-#endif
+        // #if (!UNITY_EDITOR && UNITY_WEBGL)
+        // useJobs = false;
+        // #endif
     }
 
     void Start()

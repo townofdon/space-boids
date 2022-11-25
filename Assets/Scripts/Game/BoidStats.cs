@@ -12,6 +12,7 @@ public class BoidStats : ScriptableObject
     [Space]
     [Space]
 
+    public float audioDelay = 0f;
     public float audioLatency = 0.4f;
     public float audioScreenCutoff = 0.75f;
 

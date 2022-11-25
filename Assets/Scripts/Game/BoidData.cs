@@ -5,6 +5,8 @@ public struct BoidData
 {
     public bool isInitialized { get; private set; }
     public bool debug { get; private set; }
+    public bool isAlive { get; private set; }
+    bool didPerceive;
     public Vector2 position { get; private set; }
     public Vector2 velocity { get; private set; }
 
@@ -22,19 +24,18 @@ public struct BoidData
 
     public float awarenessLatency { get; private set; }
     public float timeSinceLastPerceived { get; private set; }
-    public bool isAlive { get; private set; }
     public float neighborCountQuotient { get; private set; }
+    public float closestFoodDistance;
+
     public Boid.BoidType boidType { get; private set; }
     public Food.FoodType foodType { get; private set; }
 
-    public float closestFoodDistance;
     public Vector2 closestFoodPosition;
-    public Food closestFoodRef { private get; set; }
 
-    bool didPerceive;
-    int neighborsCount;
+    public int neighborsCount { get; private set; }
 
     // make sure to only modify these values, not read from them to avoid L2 cache misses
+    public Food closestFoodRef { private get; set; }
     Boid boidRef;
 
     public Boid Entity => boidRef;
@@ -45,6 +46,7 @@ public struct BoidData
         isInitialized = true;
         boidRef = incoming;
         boidType = boidRef.Type;
+        position = boidRef.position;
         foodType = boidRef.GetFoodType();
         timeSinceLastPerceived = UnityEngine.Random.Range(0f, boidRef.StatAwarenessLatency);
     }

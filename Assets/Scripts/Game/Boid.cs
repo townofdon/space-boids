@@ -48,6 +48,7 @@ public class Boid : MonoBehaviour
     Vector2 makeWayForLeader;
     Vector2 avoidObstacles;
     Vector2 avoidPredators;
+    Vector2 avoidWalls;
     Vector2 seekFood;
     Food closestFood;
     float maxCloseness;
@@ -239,12 +240,8 @@ public class Boid : MonoBehaviour
     Vector2 AvoidWalls()
     {
         timeSinceLastWallHit += Time.deltaTime * Simulation.speed;
-        if (!wallHit) return desiredHeading;
-        if (wallHit.collider == null) return desiredHeading;
-        float falloff = 1f - Mathf.InverseLerp(0f, WALL_HIT_FALLOFF, timeSinceLastWallHit);
-        float wallAvoidance = stats.wallAvoidanceMod.Evaluate((stats.sightDistance - wallHit.distance) / stats.sightDistance) * falloff;
-        rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, wallAvoidance) + rotationVariance;
-        return Vector2.Lerp(desiredHeading, wallHit.normal, wallAvoidance);
+        float falloff = Mathf.InverseLerp(0f, WALL_HIT_FALLOFF, timeSinceLastWallHit);
+        return desiredHeading + Vector2.Lerp(avoidWalls, Vector2.zero, falloff);
     }
 
     void RaycastWalls()
@@ -252,7 +249,16 @@ public class Boid : MonoBehaviour
         wallCheckRay.origin = transform.position;
         wallCheckRay.direction = transform.up;
         wallHit = Physics2D.Raycast(wallCheckRay.origin, wallCheckRay.direction, stats.sightDistance, stats.wallLayer);
-        if (wallHit && wallHit.collider != null) timeSinceLastWallHit = 0f;
+        if (wallHit && wallHit.collider != null)
+        {
+            float wallAvoidance = Mathf.Lerp(0.2f, 10f, Easing.InOutQuad(1f - Mathf.InverseLerp(0f, stats.sightDistance, wallHit.distance)));
+            avoidWalls = Vector2.Reflect(velocity, wallHit.normal) * wallAvoidance;
+            timeSinceLastWallHit = 0f;
+        }
+        else
+        {
+            avoidWalls = Vector2.zero;
+        }
     }
 
     IEnumerator LookForWalls()
@@ -275,12 +281,13 @@ public class Boid : MonoBehaviour
     {
         while (true)
         {
-            if (IsOutsideAudioBounds() || UnityEngine.Random.Range(0f, 1f) > 0.95f)
+            if (IsOutsideAudioBounds())
             {
                 emitter.Stop();
             }
             else if (!emitter.IsPlaying())
             {
+                yield return new WaitForSeconds(UnityEngine.Random.Range(0f, stats.audioDelay));
                 emitter.Play();
             }
             yield return new WaitForSeconds(stats.audioLatency);

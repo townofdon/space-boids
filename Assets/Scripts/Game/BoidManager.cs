@@ -32,12 +32,12 @@ public class BoidManager : MonoBehaviour
     GameManager gameManager;
 
     BoidData[] boids = new BoidData[1000];
-    int boidCount = 0;
     ObstacleData[] obstacles = new ObstacleData[1000];
-    int obstacleCount = 0;
     PredatorData[] predators = new PredatorData[1000];
-    int predatorCount = 0;
     FoodData[] foods = new FoodData[50];
+    int boidCount = 0;
+    int obstacleCount = 0;
+    int predatorCount = 0;
     int foodCount = 0;
 
     void Awake()
@@ -280,11 +280,13 @@ public class BoidManager : MonoBehaviour
             #region COHESION_CALC
             boids[current].cohesion *= boids[current].neighborCountQuotient;
             boids[current].cohesion = BoidHelpers.HeadingTo(boids[current].position, boids[current].cohesion);
+            if (boids[current].neighborsCount == 0) boids[current].cohesion = Vector2.zero;
             #endregion COHESION_CALC
 
             #region ALIGNMENT_CALC
             boids[current].alignment *= boids[current].neighborCountQuotient;
             boids[current].alignment = boids[current].alignment.normalized;
+            if (boids[current].neighborsCount == 0) boids[current].alignment = Vector2.zero;
             #endregion ALIGNMENT_CALC
         }
 
