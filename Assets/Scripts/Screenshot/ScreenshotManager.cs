@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum ScreenshotMode
 {
@@ -11,7 +12,11 @@ public class ScreenshotManager : MonoBehaviour
 {
     ScreenshotMode mode;
 
+    [SerializeField] float timeBetweenShots = 0.1f;
     [SerializeField] ScreenshotUI screenshotUI;
+
+    float timeElapsedSinceLastShot = float.MaxValue;
+    bool shouldTakeScreenshot;
 
     public bool isScreenshotModeEnabled => mode != ScreenshotMode.DISABLED;
 
@@ -25,13 +30,16 @@ public class ScreenshotManager : MonoBehaviour
         else
         {
             mode = ScreenshotMode.DISABLED;
-            screenshotUI.Hide();
+            OnModeDisabled();
         }
     }
 
     public void TryToTakeScreenshot()
     {
-        screenshotUI.Flash();
+        if (!screenshotUI.IsInteractable) return;
+        if (timeElapsedSinceLastShot < timeBetweenShots) return;
+        timeElapsedSinceLastShot = 0f;
+        shouldTakeScreenshot = true;
     }
 
     void OnModeReady()
@@ -42,5 +50,30 @@ public class ScreenshotManager : MonoBehaviour
     void OnModeDisabled()
     {
         screenshotUI.Hide();
+    }
+
+    void OnEnable()
+    {
+        RenderPipelineManager.endCameraRendering += OnEndCameraRender;
+    }
+
+    void OnDisable()
+    {
+        RenderPipelineManager.endCameraRendering -= OnEndCameraRender;
+    }
+
+    void Update()
+    {
+        timeElapsedSinceLastShot += Time.deltaTime;
+    }
+
+    void OnEndCameraRender(ScriptableRenderContext arg1, Camera arg2)
+    {
+        if (!shouldTakeScreenshot) return;
+        shouldTakeScreenshot = false;
+        Time.timeScale = 0f;
+        ScreenshotUtils.TakeScreenshot();
+        Time.timeScale = 1f;
+        screenshotUI.Flash();
     }
 }

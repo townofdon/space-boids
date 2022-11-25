@@ -79,6 +79,8 @@ public class Player : MonoBehaviour
 
     FoodLauncherState[] launchers = new FoodLauncherState[3];
     int currentLauncherIndex = (int)Food.FoodType.Pod;
+    Coroutine coTutorial;
+    Tween tutorial;
 
     void ResetInput()
     {
@@ -171,7 +173,7 @@ public class Player : MonoBehaviour
                 break;
             case GlobalEvent.type.SIMULATION_START:
                 input.ActivateInput();
-                StartCoroutine(InitialTutorial());
+                coTutorial = StartCoroutine(InitialTutorial());
                 break;
             case GlobalEvent.type.OPEN_MENU:
                 isInputDisabled = true;
@@ -323,7 +325,6 @@ public class Player : MonoBehaviour
 
     IEnumerator InitialTutorial()
     {
-        Tween tutorial;
         yield return new WaitForSeconds(timeDelayTutorial);
         tutorial = movementInstructions.DOFade(1f, instructionFadeTime);
         yield return tutorial.WaitForCompletion();
@@ -339,11 +340,28 @@ public class Player : MonoBehaviour
 
     IEnumerator WeaponsTutorial()
     {
-        Tween tutorial;
+        yield return StopInitialTutorial();
         tutorial = weaponsInstructions.DOFade(1f, instructionFadeTime);
         yield return tutorial.WaitForCompletion();
         yield return new WaitForSeconds(timeShowWeaponsInstructions);
         tutorial = weaponsInstructions.DOFade(0f, instructionFadeTime);
         yield return tutorial.WaitForCompletion();
+    }
+
+    IEnumerator StopInitialTutorial()
+    {
+        if (coTutorial != null) StopCoroutine(coTutorial);
+        if (tutorial != null) tutorial.Kill();
+        if (movementInstructions.alpha > 0f)
+        {
+            tutorial = movementInstructions.DOFade(0f, instructionFadeTime);
+            yield return tutorial.WaitForCompletion();
+        }
+        if (settingsInstructions.alpha > 0f)
+        {
+            tutorial = settingsInstructions.DOFade(0f, instructionFadeTime);
+            yield return tutorial.WaitForCompletion();
+        }
+        yield return null;
     }
 }

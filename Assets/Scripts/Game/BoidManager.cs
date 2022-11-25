@@ -111,6 +111,7 @@ public class BoidManager : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale <= 0f) return;
         if (gameManager.UseJobs)
         {
             UpdateWithJobs();

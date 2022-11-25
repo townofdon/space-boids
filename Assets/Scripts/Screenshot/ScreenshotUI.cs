@@ -5,7 +5,6 @@ public class ScreenshotUI : MonoBehaviour
 {
     [SerializeField] float fadeDuration = 0.3f;
     [SerializeField] float flashDuration = 0.5f;
-    [SerializeField] float timeBetweenShots = 0.25f;
 
     [Space]
     [Space]
@@ -23,9 +22,10 @@ public class ScreenshotUI : MonoBehaviour
     Tween fading;
     Tween slowmoing;
     Tween flashing;
-
     bool isInteractable;
-    float timeElapsedSinceLastShot = float.MaxValue;
+
+    public bool IsInteractable => isInteractable;
+
 
     public void Show()
     {
@@ -50,11 +50,9 @@ public class ScreenshotUI : MonoBehaviour
     public void Flash()
     {
         if (!isInteractable) return;
-        if (timeElapsedSinceLastShot < timeBetweenShots) return;
         if (flashing != null) flashing.Kill();
         flash.alpha = 1f;
         flashing = flash.DOFade(0f, flashDuration);
-        timeElapsedSinceLastShot = 0f;
     }
 
     void Awake()
@@ -62,11 +60,6 @@ public class ScreenshotUI : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
         canvasGroup.alpha = 0f;
         flash.alpha = 0f;
-    }
-
-    void Update()
-    {
-        timeElapsedSinceLastShot += Time.deltaTime;
     }
 
     void ResetTweens()

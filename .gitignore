@@ -99,4 +99,7 @@ fmod_editor.log
 
 DeployScripts/webgl
 
+/[Aa]ssets/[Ss]creenshots
+/[Aa]ssets/[Ss]creenshots.meta
+
 .env
