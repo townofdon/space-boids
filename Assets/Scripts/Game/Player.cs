@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rb;
     SettingsMenu settings;
+    ScreenshotManager screenshotManager;
     PlayerInput input;
     InputActionMap inputActionMap;
 
@@ -111,7 +112,14 @@ public class Player : MonoBehaviour
     {
         if (isInputDisabled) return;
         if (!value.isPressed) return;
-        TryToFire();
+        if (screenshotManager.isScreenshotModeEnabled)
+        {
+            screenshotManager.TryToTakeScreenshot();
+        }
+        else
+        {
+            TryToFire();
+        }
     }
 
     // PlayerInput message
@@ -119,6 +127,20 @@ public class Player : MonoBehaviour
     {
         if (!value.isPressed) return;
         settings.ToggleMenu();
+    }
+
+    // PlayerInput message
+    void OnScreenshotMode(InputValue value)
+    {
+        if (!value.isPressed) return;
+        screenshotManager.ToggleScreenshotMode();
+    }
+
+    // PlayerInput message
+    void OnTakeScreenshot(InputValue value)
+    {
+        if (!value.isPressed) return;
+        screenshotManager.TryToTakeScreenshot();
     }
 
     void OnEnable()
@@ -164,6 +186,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInput>();
         settings = FindObjectOfType<SettingsMenu>();
+        screenshotManager = FindObjectOfType<ScreenshotManager>();
         leftEmission = leftTrail.emission;
         rightEmission = rightTrail.emission;
         leftEmission.rateOverTime = 0f;
