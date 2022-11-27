@@ -1,6 +1,5 @@
 #!/bin/bash
 
-USERNAME="donjuanjavier"
 GAME="space-boids"
 CHANNEL="html"
 IS_MAC_OS=true
@@ -59,6 +58,24 @@ assertDirExists() {
       exit 1
   fi
 }
+assertVarExists() {
+  if [ -z "$1" ]; then
+      error "Var does not exist"
+      exit 1
+  fi
+}
+readEnvVar() {
+  VAR=$(grep "^$1=" "../.env" | xargs)
+  IFS="=" read -ra VAR <<< "$VAR"
+  IFS=" "
+  echo ${VAR[1]}
+}
+
+#
+# GET USERNAME
+#
+USERNAME=$(readEnvVar ITCHIO_USERNAME)
+assertVarExists $USERNAME
 
 #
 # GET VERSION
@@ -76,6 +93,8 @@ SAFE_VERSION="${VERSION//./$'-'}"
 #
 
 info "WELCOME TO THE UNITY DEPLOYMENT SCRIPT!"
+info "USER=${YELLOW}${USERNAME}"
+info "GAME=${YELLOW}${GAME}"
 info "About to push version ${RED}${VERSION}${CYAN} - proceed?"
 prompt "(y/n)"
 
