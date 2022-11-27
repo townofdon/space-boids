@@ -15,21 +15,21 @@ MonoBehaviour:
   moveSpeed: 10
   rotationSpeed: 320
   rotationVariance: 45
-  awarenessLatency: 0.1
-  awarenessVariance: 0.05
+  awarenessLatency: 0.08
+  awarenessVariance: 0.04
   audioDelay: 0.1
   audioLatency: 0.5
   audioScreenCutoff: 0.75
   reflectOffScreenEdges: 0
   sightDistance: 7
-  steeringVariance: 0.2
-  steeringVarianceTimeStep: 0.5
+  steeringVariance: 0.1
+  steeringVarianceTimeStep: 0.6
   cohesion: 0.149
-  separation: 0.068
+  separation: 0.228
   alignment: 0.207
   followTheLeader: 0
   avoidance: 1
-  runFromPredators: 0.95
+  runFromPredators: 0.797
   seekFood: 0.661
   closenessMod:
     serializedVersion: 2

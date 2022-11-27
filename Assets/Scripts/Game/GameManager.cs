@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] bool runBenchmark;
     [SerializeField] bool debugBenchmark;
+    [SerializeField] bool debugDetail;
     [SerializeField] float metricsLatency = 0.1f;
+    [SerializeField] float benchmarkStartDelay = .2f;
     [SerializeField] float benchmarkTime = 4f;
     [SerializeField] float degradeLODFPSThreshold = 45f;
     [SerializeField] float degradeLODLatency = 0.2f;
@@ -59,15 +61,24 @@ public class GameManager : MonoBehaviour
     {
         _state = new GameState();
         CameraUtils.InvalidateCameraCache();
+        Debug.Log($"Current LOD: {Perf.LOD}");
 
         if (runBenchmark)
         {
             Perf.Init(startLOD);
-            StartCoroutine(RunBenchmark());
+            Simulation.SetSimulationSpeed(1f);
         }
         else
         {
             Simulation.SetSimulationSpeed(0f);
+        }
+    }
+
+    void Start()
+    {
+        if (runBenchmark)
+        {
+            StartCoroutine(RunBenchmark());
         }
     }
 
@@ -84,7 +95,6 @@ public class GameManager : MonoBehaviour
         {
             Perf.frameTimings[i + 1] = Perf.frameTimings[i];
         }
-        Perf.frameTimings[0].wasRecorded = true;
         Perf.frameTimings[0].deltaTime = Perf.deltaTimeThisFrame;
     }
 
@@ -97,7 +107,7 @@ public class GameManager : MonoBehaviour
         Perf.numFramesRecorded = 0;
         for (int i = 0; i < Perf.frameTimings.Length; i++)
         {
-            if (!Perf.frameTimings[i].wasRecorded) continue;
+            if (Perf.frameTimings[i].deltaTime == 0f) continue;
             Perf.numFramesRecorded++;
             Perf.totalDeltaTime += Perf.frameTimings[i].deltaTime;
             if (Perf.frameTimings[i].deltaTime > Perf.maxDeltaTime) Perf.maxDeltaTime = Perf.frameTimings[i].deltaTime;
@@ -132,11 +142,14 @@ public class GameManager : MonoBehaviour
         if (!debugBenchmark) return;
         string str = "";
         str += $"AVG={Perf.avgFPS} FPS ({Perf.avgDeltaTime}s) \n";
-        str += $"MAX={Perf.maxFPS} FPS ({Perf.maxDeltaTime}s) \n";
-        str += $"MIN={Perf.minFPS} FPS ({Perf.minDeltaTime}s) \n";
-        for (int i = 0; i < Perf.frameTimings.Length; i++)
+        str += $"MAX={Perf.maxFPS} FPS ({Perf.minDeltaTime}s) \n";
+        str += $"MIN={Perf.minFPS} FPS ({Perf.maxDeltaTime}s) \n";
+        if (debugDetail)
         {
-            str += $"F{i}={toFPS(Perf.frameTimings[i].deltaTime)} FPS ({Perf.frameTimings[i].deltaTime}s) \n";
+            for (int i = 0; i < Perf.frameTimings.Length; i++)
+            {
+                str += $"F{i}={toFPS(Perf.frameTimings[i].deltaTime)} FPS ({Perf.frameTimings[i].deltaTime}s) \n";
+            }
         }
         Debug.Log(str);
     }
@@ -155,7 +168,6 @@ public class GameManager : MonoBehaviour
     IEnumerator RunBenchmark()
     {
         float t = 0f;
-
         while (t < benchmarkTime)
         {
             PopulateFrameTimings();
@@ -163,7 +175,7 @@ public class GameManager : MonoBehaviour
             {
                 CalcFrameTiming();
                 DebugFrameTiming();
-                CheckLOD();
+                if (t >= benchmarkStartDelay) CheckLOD();
                 Perf.timeElapsedSinceLastMetric = 0f;
             }
             else

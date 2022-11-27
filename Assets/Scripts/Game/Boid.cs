@@ -18,6 +18,13 @@ public class Boid : MonoBehaviour
     [SerializeField] BoidStats stats;
     [SerializeField] float size = 0.5f;
 
+    [Space]
+    [Space]
+
+    [SerializeField] int lightLOD = 3;
+    [SerializeField] Material unlitMaterial;
+    [SerializeField] SpriteRenderer shipSprite;
+
     public Food.FoodType GetFoodType()
     {
         switch (type)
@@ -129,6 +136,17 @@ public class Boid : MonoBehaviour
     void OnGlobalEvent(GlobalEvent.type eventType)
     {
         if (eventType == GlobalEvent.type.SIMULATION_START) StartCoroutine(PlayOrStopAudio());
+        if (eventType == GlobalEvent.type.DEGRADE_LOD) CheckLOD();
+    }
+
+    void CheckLOD()
+    {
+        if (lightLOD > Perf.LOD) TurnOffLights();
+    }
+
+    void TurnOffLights()
+    {
+        shipSprite.material = unlitMaterial;
     }
 
     void Awake()
@@ -146,17 +164,18 @@ public class Boid : MonoBehaviour
         desiredHeading = transform.up;
         rotationVariance = UnityEngine.Random.Range(-stats.rotationVariance, stats.rotationVariance);
         StartCoroutine(LookForWalls());
+        CheckLOD();
     }
 
     void Update()
     {
         desiredHeading += cohesion * CalcStat(stats.cohesion, gameManager.state.cohesion);
         desiredHeading += alignment * CalcStat(stats.alignment, gameManager.state.alignment);
-        desiredHeading += seekFood * CalcStat(stats.seekFood, gameManager.state.seekFood);
+        desiredHeading += seekFood * CalcStat(stats.seekFood, gameManager.state.seekFood, 2f);
         desiredHeading += followTheLeader * stats.followTheLeader;
         desiredHeading += separation * CalcStat(stats.separation, gameManager.state.separation);
         desiredHeading += avoidObstacles * 2f;
-        desiredHeading += avoidPredators * CalcStat(stats.runFromPredators, gameManager.state.avoidPredators) * 4f;
+        desiredHeading += avoidPredators * CalcStat(stats.runFromPredators, gameManager.state.avoidPredators, 5f) * 4f;
         rotationSpeed = stats.rotationSpeed * Mathf.Lerp(1f, stats.avoidanceRotationMod, maxCloseness);
         desiredHeading = VaryHeading();
         if (stats.reflectOffScreenEdges) desiredHeading = ReflectOffScreenEdges();
@@ -188,11 +207,11 @@ public class Boid : MonoBehaviour
         if (Vector2.Distance(closestFood.transform.position, transform.position) <= foodChompDistance) closestFood.GetChomped();
     }
 
-    float CalcStat(float stat, float globalStat)
+    float CalcStat(float stat, float globalStat, float extraMod = 1f)
     {
         if (globalStat >= 1f)
         {
-            return Mathf.Lerp(stat, 1f, globalStat - 1f);
+            return Mathf.Lerp(stat, 1f, globalStat - 1f) * Mathf.Lerp(1f, extraMod, globalStat - 1f);
         }
         return stat * globalStat;
     }

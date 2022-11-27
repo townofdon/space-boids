@@ -1,9 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using FMODUnity;
 using DG.Tweening;
-using Cinemachine;
 
 
 // NOTE - I combined all of the player functionality into a single script for sheer convenience.
@@ -14,6 +14,17 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float cardinality = 45f;
+
+    [Space]
+    [Space]
+
+    [SerializeField] int lightLOD = 5;
+    [SerializeField] Light2D spotlight;
+    [SerializeField] Light2D circlelight;
+    [SerializeField] SpriteRenderer spotlightFast;
+    [SerializeField] SpriteRenderer circlelightFast;
+    [SerializeField] Material unlitMaterial;
+    [SerializeField] SpriteRenderer shipSprite;
 
     [Space]
     [Space]
@@ -184,7 +195,24 @@ public class Player : MonoBehaviour
                 isInputDisabled = false;
                 ResetInput();
                 break;
+            case GlobalEvent.type.DEGRADE_LOD:
+                CheckLOD();
+                break;
         }
+    }
+
+    void CheckLOD()
+    {
+        if (lightLOD > Perf.LOD) TurnOffLights();
+    }
+
+    void TurnOffLights()
+    {
+        spotlight.enabled = false;
+        circlelight.enabled = false;
+        spotlightFast.SetActiveAndEnable(true);
+        circlelightFast.SetActiveAndEnable(true);
+        shipSprite.material = unlitMaterial;
     }
 
     void Awake()
@@ -209,6 +237,7 @@ public class Player : MonoBehaviour
         GlobalEvent.Invoke(GlobalEvent.type.SELECT_BLUE_POWER_TANK);
         tutorialCanvas.transform.SetParent(null);
         input.DeactivateInput();
+        CheckLOD();
     }
 
     void Update()

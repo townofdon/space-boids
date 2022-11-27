@@ -78,7 +78,7 @@ public class Food : MonoBehaviour
         else
         {
             chompedFX.Play();
-            chompSound.Play();
+            if (chompSound != null) chompSound.Play();
         }
     }
 
@@ -90,8 +90,13 @@ public class Food : MonoBehaviour
     void OnDisable()
     {
         Simulation.DeregisterFood(this);
-        intensify.Kill();
-        transparencify.Kill();
+        StopAllCoroutines();
+    }
+
+    void OnDestroy()
+    {
+        if (intensify != null) intensify.Kill();
+        if (transparencify != null) transparencify.Kill();
     }
 
     void Awake()
@@ -129,7 +134,7 @@ public class Food : MonoBehaviour
     {
         if (isEaten) return;
 
-        perishSound.Play();
+        if (perishSound != null) perishSound.Play();
         isEaten = true;
         spriteRenderer.enabled = false;
         eatenFx.Play();
@@ -145,7 +150,7 @@ public class Food : MonoBehaviour
         yield return intensify.WaitForCompletion();
         yield return transparencify.WaitForCompletion();
         intensify = DOTween.To(() => light.intensity, (x) => light.intensity = x, 0f, explosionTime);
-        transparencify = DOTween.To(() => lightWebGL.color.a, (x) => lightWebGL.color = lightWebGL.color.toAlpha(x), 0f, 0.1f);
+        transparencify = DOTween.To(() => lightWebGL.color.a, (x) => lightWebGL.color = lightWebGL.color.toAlpha(x), 0f, explosionTime);
         yield return intensify.WaitForCompletion();
         yield return transparencify.WaitForCompletion();
     }

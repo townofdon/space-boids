@@ -219,9 +219,9 @@ public class BoidManager : MonoBehaviour
                 float distance = BoidHelpers.DistanceTo(boids[current].position, obstacles[i].position);
                 // get closeness as a value from MIN to MAX
                 closeness = obstacles[i].avoidanceMaxRadius - (distance - obstacles[i].avoidanceMinRadius);
-                // get closeness where 0 => MIN, 1 => MAX avoidance radius
+                // get closeness where 1 => MIN, 0 => MAX avoidance radius
                 closeness = Mathf.Clamp01(closeness / (obstacles[i].avoidanceMaxRadius - obstacles[i].avoidanceMinRadius));
-                if (closeness < boids[current].maxObstacleCloseness) boids[current].maxObstacleCloseness = closeness;
+                if (closeness > boids[current].maxObstacleCloseness) boids[current].maxObstacleCloseness = closeness;
                 closeness = Mathf.Pow(closeness, boids[current].avoidanceTension);
                 closeness = closeness * boids[current].avoidanceStrength * obstacles[i].avoidanceMod;
                 boids[current].avoidObstacles += BoidHelpers.HeadingFrom(
@@ -235,12 +235,11 @@ public class BoidManager : MonoBehaviour
             #region PREDATORS
             for (int i = 0; i < predatorCount; i++)
             {
-                if (!BoidHelpers.CanSee(
+                if (!BoidHelpers.IsInRange(
                     boids[current].position,
                     predators[i].position,
-                    boids[current].sightDistance,
-                    boids[current].velocity)
-                ) continue;
+                    boids[current].sightDistance
+                )) continue;
 
                 #region AVOID_PREDATORS_AGGREGATE
                 float closeness = 0f;
@@ -248,8 +247,9 @@ public class BoidManager : MonoBehaviour
                 distance = BoidHelpers.DistanceTo(boids[current].position, predators[i].position);
                 closeness = sightDistance - distance;
                 closeness = Mathf.Clamp01(closeness * sightDistanceQuotient);
-                closeness = Easing.OutExpo(Easing.OutExpo(closeness));
-                boids[current].avoidPredators += BoidHelpers.HeadingFrom(boids[current].position, predators[i].position) * closeness;
+                if (closeness > boids[current].maxObstacleCloseness) boids[current].maxObstacleCloseness = closeness;
+                closeness = Easing.OutExpo(Easing.OutExpo(closeness)) * .5f + .5f;
+                boids[current].avoidPredators += BoidHelpers.HeadingFrom(boids[current].position, predators[i].position) * closeness * predators[i].scarinessMod;
                 #endregion AVOID_PREDATORS_AGGREGATE
             }
             #endregion PREDATORS
@@ -289,6 +289,11 @@ public class BoidManager : MonoBehaviour
             boids[current].alignment = boids[current].alignment.normalized;
             if (boids[current].neighborsCount == 0) boids[current].alignment = Vector2.zero;
             #endregion ALIGNMENT_CALC
+
+            #region SEPARATION_CALC
+            boids[current].separation = boids[current].separation.normalized;
+            if (boids[current].neighborsCount == 0) boids[current].separation = Vector2.zero;
+            #endregion SEPARATION_CALC
         }
 
         for (int i = 0; i < boidCount; i++)

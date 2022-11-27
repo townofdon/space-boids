@@ -21,11 +21,10 @@ public static class Perf
 
     public static float timeBelowThreshold;
 
-    public static int LOD;
+    public static int LOD = 10;
 }
 
 public struct FrameTiming
 {
-    public bool wasRecorded;
     public float deltaTime;
 }

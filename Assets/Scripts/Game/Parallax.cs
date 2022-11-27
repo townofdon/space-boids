@@ -50,7 +50,7 @@ public class Parallax : MonoBehaviour
         initialPosition = transform.position;
     }
 
-    void Update()
+    void LateUpdate()
     {
         // disabling depth by z-index since pixel-perfect camera limits the far clipping plane to 5f
         // float depth = transform.position.z * 0.1f;

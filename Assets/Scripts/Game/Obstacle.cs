@@ -27,18 +27,23 @@ public class Obstacle : MonoBehaviour
     {
         avoidanceOrientation = UnityEngine.Random.Range(0, 2) == 0 ? 1f : -1f;
         Simulation.RegisterObstacle(this);
+        GlobalEvent.Subscribe(OnGlobalEvent);
     }
 
     void OnDisable()
     {
         Simulation.DeregisterObstacle(this);
+        GlobalEvent.Unsubscribe(OnGlobalEvent);
     }
 
     void Awake()
     {
         shadowCaster = GetComponent<ShadowCaster2D>();
         rigidbody = GetComponent<Rigidbody2D>();
+    }
 
+    void Start()
+    {
         CheckLOD();
     }
 
