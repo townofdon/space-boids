@@ -22,8 +22,10 @@ public class Boid : MonoBehaviour
     [Space]
 
     [SerializeField] int lightLOD = 3;
+    [SerializeField] int trailLOD = 3;
     [SerializeField] Material unlitMaterial;
     [SerializeField] SpriteRenderer shipSprite;
+    [SerializeField] TrailRenderer trail;
 
     public Food.FoodType GetFoodType()
     {
@@ -142,11 +144,17 @@ public class Boid : MonoBehaviour
     void CheckLOD()
     {
         if (lightLOD > Perf.LOD) TurnOffLights();
+        if (trailLOD > Perf.LOD) TurnOffTrail();
     }
 
     void TurnOffLights()
     {
         shipSprite.material = unlitMaterial;
+    }
+
+    void TurnOffTrail()
+    {
+        trail.enabled = false;
     }
 
     void Awake()

@@ -75,8 +75,10 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: 6edf2c1d9d1db4b1f9872b7a40ca6a9d, type: 2}
   size: 0.5
   lightLOD: 3
+  trailLOD: 2
   unlitMaterial: {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   shipSprite: {fileID: 8474355229200189830}
+  trail: {fileID: 2646695288136592699}
 --- !u!96 &2646695288136592699
 TrailRenderer:
   serializedVersion: 2

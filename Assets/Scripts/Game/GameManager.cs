@@ -189,8 +189,8 @@ public class GameManager : MonoBehaviour
                 yield break;
             }
 
-            t += Time.unscaledDeltaTime;
-            Perf.timeBelowThreshold += Time.unscaledDeltaTime;
+            t += Mathf.Min(Time.deltaTime, .5f);
+            Perf.timeBelowThreshold += Mathf.Min(Time.deltaTime, .5f);
 
             loadingBar.value = benchmarkTime > 0 ? (t / benchmarkTime) : 0;
 
