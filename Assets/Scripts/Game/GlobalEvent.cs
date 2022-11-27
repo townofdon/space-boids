@@ -14,6 +14,7 @@ public static class GlobalEvent
         SELECT_RED_POWER_TANK,
         OPEN_MENU,
         CLOSE_MENU,
+        DEGRADE_LOD,
     }
 
     static Action<type> OnGlobalEvent;

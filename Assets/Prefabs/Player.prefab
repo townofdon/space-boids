@@ -1454,7 +1454,7 @@ MonoBehaviour:
   timeShowWeaponsInstructions: 5
   timeBetweenInstructions: 1
   instructionFadeTime: 0.5
-  tutorialCanvas: {fileID: 8032638273358534383}
+  tutorialCanvas: {fileID: 1278037275856987543}
   movementInstructions: {fileID: 9065933426285197058}
   settingsInstructions: {fileID: 6568637763838862602}
   weaponsInstructions: {fileID: 5547181818336353280}

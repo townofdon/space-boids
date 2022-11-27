@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using FMODUnity;
 using DG.Tweening;
+using Cinemachine;
 
 
 // NOTE - I combined all of the player functionality into a single script for sheer convenience.
@@ -41,7 +42,7 @@ public class Player : MonoBehaviour
     [SerializeField] float timeShowWeaponsInstructions = 3f;
     [SerializeField] float timeBetweenInstructions = 1f;
     [SerializeField] float instructionFadeTime = 0.5f;
-    [SerializeField] GameObject tutorialCanvas;
+    [SerializeField] Canvas tutorialCanvas;
     [SerializeField] CanvasGroup movementInstructions;
     [SerializeField] CanvasGroup settingsInstructions;
     [SerializeField] CanvasGroup weaponsInstructions;

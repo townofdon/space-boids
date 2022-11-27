@@ -30,6 +30,11 @@ public static class CameraUtils
         if (_camera != null) return _camera;
         return Camera.main;
     }
+
+    public static void InvalidateCameraCache()
+    {
+        _camera = null;
+    }
 }
 
 public class ScreenStats
