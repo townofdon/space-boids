@@ -26,10 +26,13 @@ public static class ScreenshotUtils
         screenshotTexture.ReadPixels(rect, 0, 0);
         screenshotTexture.Apply();
         byte[] byteArray = GetEncodedData(screenshotTexture, FILE_EXTENSION);
-#if (!UNITY_EDITOR && UNITY_WEBGL)
-        SaveFileWebGL(byteArray);
-#else
+
+#if (UNITY_EDITOR)
         SaveFileLocal(byteArray);
+#elif (UNITY_WEBGL)
+        SaveFileWebGL(byteArray);
+#elif (UNITY_STANDALONE)
+        SaveFileNative(byteArray);
 #endif
     }
 
@@ -56,6 +59,11 @@ public static class ScreenshotUtils
     static void SaveFileWebGL(byte[] byteArray)
     {
         DownloadFile(byteArray, byteArray.Length, GetFilename());
+    }
+
+    static void SaveFileNative(byte[] byteArray)
+    {
+        System.IO.File.WriteAllBytes($"{Application.persistentDataPath}/{GetFilename()}", byteArray);
     }
 
     static void SaveFileLocal(byte[] byteArray)

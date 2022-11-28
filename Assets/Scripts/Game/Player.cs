@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
     InputActionMap inputActionMap;
 
     bool isInputDisabled;
+    bool isPaused;
 
     Vector2 move;
     Vector2 look;
@@ -104,6 +105,7 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         if (isInputDisabled) return;
+        if (isPaused) return;
         move = value.Get<Vector2>();
     }
 
@@ -111,12 +113,14 @@ public class Player : MonoBehaviour
     void OnLook(InputValue value)
     {
         if (isInputDisabled) return;
+        if (isPaused) return;
         look = value.Get<Vector2>();
     }
 
     void OnSwitchWeapon(InputValue value)
     {
         if (isInputDisabled) return;
+        if (isPaused) return;
         if (!value.isPressed) return;
         TryToSwitchWeapon();
     }
@@ -125,6 +129,7 @@ public class Player : MonoBehaviour
     void OnFire(InputValue value)
     {
         if (isInputDisabled) return;
+        if (isPaused) return;
         if (!value.isPressed) return;
         if (screenshotManager.isScreenshotModeEnabled)
         {
@@ -139,6 +144,7 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnSettings(InputValue value)
     {
+        if (isPaused) return;
         if (screenshotManager.isScreenshotModeEnabled) return;
         if (!value.isPressed) return;
         settings.ToggleMenu();
@@ -147,6 +153,7 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnToggleScreenshotMode(InputValue value)
     {
+        if (isPaused) return;
         if (isInputDisabled) return;
         if (!value.isPressed) return;
         screenshotManager.ToggleScreenshotMode();
@@ -155,9 +162,27 @@ public class Player : MonoBehaviour
     // PlayerInput message
     void OnTakeScreenshot(InputValue value)
     {
+        if (isPaused) return;
         if (isInputDisabled) return;
         if (!value.isPressed) return;
         screenshotManager.TryToTakeScreenshot();
+    }
+
+    // PlayerInput message
+    void OnPause(InputValue value)
+    {
+        if (isInputDisabled) return;
+        if (!value.isPressed) return;
+        if (!isPaused)
+        {
+            isPaused = true;
+            GlobalEvent.Invoke(GlobalEvent.type.PAUSE);
+        }
+        else
+        {
+            isPaused = false;
+            GlobalEvent.Invoke(GlobalEvent.type.UNPAUSE);
+        }
     }
 
     void OnEnable()
@@ -197,6 +222,9 @@ public class Player : MonoBehaviour
                 break;
             case GlobalEvent.type.DEGRADE_LOD:
                 CheckLOD();
+                break;
+            case GlobalEvent.type.UNPAUSE:
+                isPaused = false;
                 break;
         }
     }

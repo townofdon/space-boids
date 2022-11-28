@@ -15,6 +15,10 @@ public static class GlobalEvent
         OPEN_MENU,
         CLOSE_MENU,
         DEGRADE_LOD,
+        PAUSE,
+        UNPAUSE,
+        MUFFLE_AUDIO,
+        UNMUFFLE_AUDIO,
     }
 
     static Action<type> OnGlobalEvent;

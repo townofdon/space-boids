@@ -26,10 +26,10 @@ public class MainMusic : MonoBehaviour
     {
         switch (eventType)
         {
-            case GlobalEvent.type.OPEN_MENU:
+            case GlobalEvent.type.MUFFLE_AUDIO:
                 emitter.SetParameter(TRIGGER_MENU_OPEN, 1f);
                 break;
-            case GlobalEvent.type.CLOSE_MENU:
+            case GlobalEvent.type.UNMUFFLE_AUDIO:
                 emitter.SetParameter(TRIGGER_MENU_OPEN, 0f);
                 break;
         }

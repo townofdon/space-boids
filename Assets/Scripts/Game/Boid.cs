@@ -139,6 +139,7 @@ public class Boid : MonoBehaviour
     {
         if (eventType == GlobalEvent.type.SIMULATION_START) StartCoroutine(PlayOrStopAudio());
         if (eventType == GlobalEvent.type.DEGRADE_LOD) CheckLOD();
+        if (eventType == GlobalEvent.type.PAUSE) emitter.Stop();
     }
 
     void CheckLOD()

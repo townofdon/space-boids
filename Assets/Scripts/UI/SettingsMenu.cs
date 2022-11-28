@@ -6,6 +6,7 @@ using FMODUnity;
 
 public class SettingsMenu : MonoBehaviour
 {
+    // [SerializeField] float animationTime = 1f;
     [SerializeField] float animationTime = 1f;
     [SerializeField] RectTransform rect;
     [SerializeField] Button openButton;
@@ -13,8 +14,6 @@ public class SettingsMenu : MonoBehaviour
     [Space]
     [Space]
 
-    [Header("Global"), ParamRef]
-    [SerializeField] string globalParamMenuOpen;
     [SerializeField] StudioEventEmitter openSound;
     [SerializeField] StudioEventEmitter closeSound;
 
@@ -40,23 +39,14 @@ public class SettingsMenu : MonoBehaviour
         }
     }
 
-    void SetGlobalParam(bool isOpen)
-    {
-        if (string.IsNullOrEmpty(globalParamMenuOpen)) return;
-        float value = isOpen ? 1f : 0f;
-        FMOD.RESULT result = RuntimeManager.StudioSystem.setParameterByName(globalParamMenuOpen, value);
-        if (result != FMOD.RESULT.OK)
-        {
-            Debug.LogError(string.Format(("[FMOD] StudioGlobalParameterTrigger failed to set parameter {0} : result = {1}"), globalParamMenuOpen, result));
-        }
-    }
+
 
     public void OpenMenu()
     {
         if (isMenuOpen) return;
         isMenuOpen = true;
         openSound.Play();
-        SetGlobalParam(true);
+        GlobalEvent.Invoke(GlobalEvent.type.MUFFLE_AUDIO);
         PrepareMenuMovement();
         minTween = rect.DOAnchorMin(new Vector2(0.5f, 0f), animationTime);
         maxTween = rect.DOAnchorMin(new Vector2(0.5f, 0f), animationTime);
@@ -76,7 +66,7 @@ public class SettingsMenu : MonoBehaviour
         isMenuOpen = false;
         openButton.interactable = true;
         closeSound.Play();
-        SetGlobalParam(false);
+        GlobalEvent.Invoke(GlobalEvent.type.UNMUFFLE_AUDIO);
         PrepareMenuMovement();
         foreach (var slider in sliders) slider.interactable = false;
         minTween = rect.DOAnchorMin(origMinAnchors, animationTime);

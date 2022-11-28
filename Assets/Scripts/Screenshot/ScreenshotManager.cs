@@ -72,7 +72,14 @@ public class ScreenshotManager : MonoBehaviour
         if (!shouldTakeScreenshot) return;
         shouldTakeScreenshot = false;
         Time.timeScale = 0f;
-        ScreenshotUtils.TakeScreenshot();
+        try
+        {
+            ScreenshotUtils.TakeScreenshot();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e);
+        }
         Time.timeScale = 1f;
         screenshotUI.Flash();
     }
