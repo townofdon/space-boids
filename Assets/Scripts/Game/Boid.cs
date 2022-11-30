@@ -218,7 +218,7 @@ public class Boid : MonoBehaviour
 
     float CalcStat(float stat, float globalStat, float extraMod = 1f)
     {
-        if (globalStat >= 1f)
+        if (globalStat > 1f)
         {
             return Mathf.Lerp(stat, 1f, globalStat - 1f) * Mathf.Lerp(1f, extraMod, globalStat - 1f);
         }

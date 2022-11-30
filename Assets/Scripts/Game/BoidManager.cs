@@ -248,7 +248,7 @@ public class BoidManager : MonoBehaviour
                 closeness = sightDistance - distance;
                 closeness = Mathf.Clamp01(closeness * sightDistanceQuotient);
                 if (closeness > boids[current].maxObstacleCloseness) boids[current].maxObstacleCloseness = closeness;
-                closeness = Easing.OutExpo(Easing.OutExpo(closeness)) * .5f + .5f;
+                closeness = Mathf.Lerp(Easing.InOutCubic(closeness), Easing.OutExpo(closeness), Mathf.Clamp01(closeness * 2f));
                 boids[current].avoidPredators += BoidHelpers.HeadingFrom(boids[current].position, predators[i].position) * closeness * predators[i].scarinessMod;
                 #endregion AVOID_PREDATORS_AGGREGATE
             }
