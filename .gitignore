@@ -94,6 +94,7 @@ crashlytics-build.properties
 # Log files can be ignored.
 fmod_editor.log
 
+mono_crash.*
 */**/.DS_Store
 .DS_Store
 

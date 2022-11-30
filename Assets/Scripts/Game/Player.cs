@@ -56,6 +56,7 @@ public class Player : MonoBehaviour
     [SerializeField] Canvas tutorialCanvas;
     [SerializeField] CanvasGroup movementInstructions;
     [SerializeField] CanvasGroup settingsInstructions;
+    [SerializeField] CanvasGroup photoModeInstructions;
     [SerializeField] CanvasGroup weaponsInstructions;
 
     [Space]
@@ -394,6 +395,12 @@ public class Player : MonoBehaviour
         yield return tutorial.WaitForCompletion();
         yield return new WaitForSeconds(timeShowSettingsInstructions);
         tutorial = settingsInstructions.DOFade(0f, instructionFadeTime);
+        // yield return tutorial.WaitForCompletion();
+        // yield return new WaitForSeconds(timeBetweenInstructions);
+        // tutorial = photoModeInstructions.DOFade(1f, instructionFadeTime);
+        // yield return tutorial.WaitForCompletion();
+        // yield return new WaitForSeconds(timeBetweenInstructions);
+        // tutorial = photoModeInstructions.DOFade(0f, instructionFadeTime);
     }
 
     IEnumerator WeaponsTutorial()
