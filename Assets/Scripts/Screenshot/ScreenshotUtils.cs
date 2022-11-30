@@ -31,8 +31,12 @@ public static class ScreenshotUtils
         SaveFileLocal(byteArray);
 #elif (UNITY_WEBGL)
         SaveFileWebGL(byteArray);
+#elif (UNITY_STANDALONE_WIN)
+        SaveFileWindows(byteArray);
+#elif (UNITY_STANDALONE_OSX)
+        SaveFileOSX(byteArray);
 #elif (UNITY_STANDALONE)
-        SaveFileNative(byteArray);
+        SaveFileOther(byteArray);
 #endif
     }
 
@@ -61,7 +65,21 @@ public static class ScreenshotUtils
         DownloadFile(byteArray, byteArray.Length, GetFilename());
     }
 
-    static void SaveFileNative(byte[] byteArray)
+    static void SaveFileWindows(byte[] byteArray)
+    {
+        // note - if this does not work, will try this solution: https://stackoverflow.com/a/61722837
+        string homePath = System.Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+        System.IO.File.WriteAllBytes($"{homePath}/Downloads/{GetFilename()}", byteArray);
+    }
+
+    static void SaveFileOSX(byte[] byteArray)
+    {
+        // see: https://stackoverflow.com/questions/1143706/getting-the-path-of-the-home-directory-in-c
+        string homePath = System.Environment.GetEnvironmentVariable("HOME");
+        System.IO.File.WriteAllBytes($"{homePath}/Downloads/{GetFilename()}", byteArray);
+    }
+
+    static void SaveFileOther(byte[] byteArray)
     {
         System.IO.File.WriteAllBytes($"{Application.persistentDataPath}/{GetFilename()}", byteArray);
     }
