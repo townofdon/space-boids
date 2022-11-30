@@ -166,6 +166,9 @@
 		<property name="isCutoff">
 			<value>true</value>
 		</property>
+		<property name="start">
+			<value>0.15721769777032391</value>
+		</property>
 		<property name="length">
 			<value>22.147188729384759</value>
 		</property>
