@@ -5,6 +5,7 @@
 - Tilemap Shadow Caster - https://github.com/BrianCraig/Tilemap-Shadow-Caster
 - Kenney - Pixel UI Pack - https://www.kenney.nl/assets/pixel-ui-pack
 - Free Controllers & Keyboard Prompts - https://thoseawesomeguys.com/prompts/
+- DOTween - http://dotween.demigiant.com/
 
 Freesound.org
 
