@@ -98,6 +98,7 @@ fmod_editor.log
 .DS_Store
 
 DeployScripts/webgl
+BuildMac*
 
 /[Aa]ssets/[Ss]creenshots
 /[Aa]ssets/[Ss]creenshots.meta
