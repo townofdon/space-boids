@@ -87,6 +87,7 @@ public class Player : MonoBehaviour
     Vector2 move;
     Vector2 look;
     Quaternion desiredRotation;
+    float moveAngle;
 
     float timeElapsedSinceLastShot = float.MaxValue;
     bool hasReceivedWeaponsInstructions = false;
@@ -271,6 +272,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        CalcMovement();
         Move();
         Rotate();
         ManageTrails();
@@ -278,18 +280,22 @@ public class Player : MonoBehaviour
         tutorialCanvas.transform.position = transform.position;
     }
 
+    void CalcMovement() {
+        moveAngle = Vector2.SignedAngle(Vector2.up, move);
+        // moveAngle = moveAngle - moveAngle % cardinality;
+        moveAngle = Mathf.Round(moveAngle / cardinality) * cardinality;
+        desiredRotation = Quaternion.Euler(0f, 0f, moveAngle);
+    }
+
     void Move()
     {
         if (Simulation.speed <= 0.1f + Mathf.Epsilon) rb.velocity = Vector2.zero;
-        rb.velocity = move * moveSpeed * Simulation.speed;
+        rb.velocity = desiredRotation * Vector2.up * move.magnitude * moveSpeed * Simulation.speed;
     }
 
     void Rotate()
     {
         if (rb.velocity.magnitude <= Mathf.Epsilon) return;
-        float angle = Vector2.SignedAngle(Vector2.up, rb.velocity);
-        angle = angle - angle % cardinality;
-        desiredRotation = Quaternion.Euler(0f, 0f, angle);
         transform.rotation = desiredRotation;
     }
 
